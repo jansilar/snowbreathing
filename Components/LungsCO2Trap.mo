@@ -1,23 +1,21 @@
-  within SnowBreathing.Components;
-  
-  model LungsCO2Trap
+ model LungsCO2Trap
     replaceable Connectors.FluxConcCO2A fluxConcA annotation(
       Placement(visible = true, transformation(origin = {6, 88}, extent = {{-10, -10}, {10, 10}}, rotation = 0), iconTransformation(origin = {6, 88}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
     Boolean exhale;
     Real q "flux into lungs";
     constant Real pi = Modelica.Constants.pi;
     //Lungs:
-    parameter Real T_L = 4 "breathing period [s]";
-    parameter Real V_max_L = 0.0048 "maximal useful lungs volume [m3]";
-    parameter Real V_0_L = 0.001 "residual capacity [m3]";
-    parameter Real q_max = V_max_L / (T_L / 2 - risingT) "absolute value of air flux [m/s]";
-    parameter Real VCO2_prod = 0.0003 * 0.8 / 60 "volume of CO2 produced per second [m3/s]";
-    Real V(start = V_max_L + V_0_L, fixed = true) "current lungs volume [m3]";
-    Real VCO2(start = VCO2_prod * T_L / 2, fixed = true) "volume of C02 in lungs [m3]";
-    Real CO2 "CO2 concentration in lungs";
+    parameter Real T_L (unit = "s")= 4 "breathing period [s]";
+    parameter Real V_max_L (unit = "m3")= 0.0048 "maximal useful lungs volume [m3]";
+    parameter Real V_0_L (unit = "m3")= 0.001 "residual capacity [m3]";
+    parameter Real q_max (unit = "m/s")= V_max_L / (T_L / 2 - risingT) "absolute value of air flux [m/s]";
+    parameter Real VCO2_prod(unit = "m3/s") = 0.0003 * 0.8 / 60 "volume of CO2 produced per second [m3/s]";
+    Real V(start = V_max_L + V_0_L, fixed = true, unit = "m3") "current lungs volume [m3]";
+    Real VCO2(start = VCO2_prod * T_L / 2, fixed = true, unit = "m3") "volume of C02 in lungs [m3]";
+    Real CO2(unit = "m3/m3") "CO2 concentration in lungs";
     Modelica.Blocks.Sources.Trapezoid breathTrapezoid(amplitude = q_max, falling = risingT, period = T_L / 2, rising = risingT, width = T_L / 2 - 2 * risingT) annotation(
       Placement(visible = true, transformation(origin = {-64, 28}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    parameter Real risingT = 0.5 "rising and falling time of breath [s]";
+    parameter Real risingT(unit = "s") = 0.5 "rising and falling time of breath [s]";
   equation
 //Lungs
     exhale = sin(2 * pi * time / T_L) > 0;

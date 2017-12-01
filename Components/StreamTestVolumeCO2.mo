@@ -2,11 +2,11 @@ within SnowBreathing.Components;
 
 model StreamTestVolumeCO2
   
-  parameter Real v_start = 1;
-  parameter Real vCO2_start = 0;
-  Real V(start = v_start);
-  Real VCO2(start = vCO2_start);
-  Real CO2;
+  parameter Real v_start (unit = "m3")= 1;
+  parameter Real vCO2_start (unit = "m3")= 0;
+  Real V(start = v_start, unit = "m3");
+  Real VCO2(start = vCO2_start, unit = "m3");
+  Real CO2(unit = "m3/m3");
   replaceable Connectors.FluxConcCO2B fluxConcB annotation(
     Placement(visible = true, transformation(origin = {2, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0), iconTransformation(origin = {2, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
 equation

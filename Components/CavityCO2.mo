@@ -1,9 +1,9 @@
 within SnowBreathing.Components;
 
 model CavityCO2
-  parameter Real V = 1;
-  Real VCO2;
-  Real CO2(start = 0);
+  parameter Real V(unit = "m3") = 1;
+  Real VCO2(unit = "m3");
+  Real CO2(start = 0, unit = "m3");
   replaceable Connectors.FluxConcCO2A fluxConcA annotation(
     Placement(visible = true, transformation(origin = {-38, -2}, extent = {{-10, -10}, {10, 10}}, rotation = 0), iconTransformation(origin = {-38, -2}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   replaceable Connectors.FluxConcCO2B fluxConcB annotation(

@@ -2,9 +2,9 @@ within SnowBreathing.Components;
 
 model DifussionSphereCO2O2_base
   extends SnowBreathing.Components.DifussionSphereCO2_base(redeclare Connectors.FluxConcCO2O2B fluxConcB);
-  field Real O2(domain = omega) "O2 concentration";
-  parameter Real O2_out = 0.2 "O2 concentration out of the sphere";
-  parameter Real O2_init = 0.2 "initial O2 concentartion";
+  field Real O2(domain = omega, unit = "m3/m3") "O2 concentration";
+  parameter Real O2_out(unit = "m3/m3") = 0.2 "O2 concentration out of the sphere";
+  parameter Real O2_init(unit = "m3/m3") = 0.2 "initial O2 concentartion";
 initial equation
   O2 = O2_init indomain omega "O2 initial concentartion";
 equation

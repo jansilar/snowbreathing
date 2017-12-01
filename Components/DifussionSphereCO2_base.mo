@@ -3,11 +3,11 @@ within SnowBreathing.Components;
 model DifussionSphereCO2_base
     //Snow
     constant Real pi = Modelica.Constants.pi;
-    DomainLineSegment1D omega(L = R_out, N = 100, x0 = R_in) "in 1D, left is boundary of the central cavity of diameter x0, x coordinate is actually r";
+    DomainLineSegment1D omega(L = R_out, N = 4, x0 = R_in) "in 1D, left is boundary of the central cavity of diameter x0, x coordinate is actually r";
     Real q "volume flow rate";
     Boolean exhale;
-    field Real CO2(domain = omega) "CO2 concentration";
-    field Real va_S(domain = omega) "velocity of advection";
+    field Real CO2(domain = omega, unit = "m3/m3") "CO2 concentration";
+    field Real va_S(domain = omega, unit = "m3/m3") "velocity of advection";
     parameter Real D = 0.00003 "coefficient of diffusion in snow [m2/s]";
     parameter Real CO2_out = 0 "CO2 concentration out of the sphere";
     parameter Real CO2_init = 0 "initial CO2 concentartion";
