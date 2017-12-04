@@ -1,6 +1,4 @@
 LungsCO2Trap
-DifussionSphereCO2_base
-DifussionSphereCO2
 StreamTestVolumeCO2
 PumpBaseCO2
 PumpConstCO2
@@ -10,10 +8,9 @@ CavityCO2
 StreamTestVolumeCO2O2
 PumpConstCO2O2
 CavityCO2O2
-DifussionSphereCO2O2
 LungsCO2O2
-DifussionSphereCO2O2_base
 TemperatureStepCO2
 TemperatureStepCO2O2
-DifussionSphereCO2O2Sol
 LungsCO2O2Trap
+DifussionSphereCO2
+DifussionSphereCO2O2

@@ -7,7 +7,7 @@ model SnowBreathingCO2O2Sol
     Placement(visible = true, transformation(origin = {-62, -20}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   SnowBreathing.Components.CavityCO2O2 cavity(V = V_cavity) annotation(
     Placement(visible = true, transformation(origin = {-2, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-SnowBreathing.Components.DifussionSphereCO2O2Sol difussionSphereCO2O2Sol1 annotation(
+SnowBreathing.Components.DifussionSphereCO2O2 difussionSphereCO2O2Sol1(useCO2Solubility = true) annotation(
     Placement(visible = true, transformation(origin = {48, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   SnowBreathing.Components.TemperatureStepCO2O2 temperatureStepCO2O21 annotation(
     Placement(visible = true, transformation(origin = {-34, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
