@@ -1,3 +1,5 @@
+within SnowBreathing.Components;
+
  model LungsCO2Trap
     replaceable Connectors.FluxConcCO2A fluxConcA annotation(
       Placement(visible = true, transformation(origin = {6, 88}, extent = {{-10, -10}, {10, 10}}, rotation = 0), iconTransformation(origin = {6, 88}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
@@ -8,7 +10,7 @@
     parameter Real T_L (unit = "s")= 4 "breathing period [s]";
     parameter Real V_max_L (unit = "m3")= 0.0048 "maximal useful lungs volume [m3]";
     parameter Real V_0_L (unit = "m3")= 0.001 "residual capacity [m3]";
-    parameter Real q_max (unit = "m/s")= V_max_L / (T_L / 2 - risingT) "absolute value of air flux [m/s]";
+    parameter Real q_max (unit = "m3/s")= V_max_L / (T_L / 2 - risingT) "absolute value of air flux [m3/s]";
     parameter Real VCO2_prod(unit = "m3/s") = 0.0003 * 0.8 / 60 "volume of CO2 produced per second [m3/s]";
     Real V(start = V_max_L + V_0_L, fixed = true, unit = "m3") "current lungs volume [m3]";
     Real VCO2(start = VCO2_prod * T_L / 2, fixed = true, unit = "m3") "volume of C02 in lungs [m3]";

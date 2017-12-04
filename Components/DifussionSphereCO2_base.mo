@@ -7,7 +7,7 @@ model DifussionSphereCO2_base
     Real q "volume flow rate";
     Boolean exhale;
     field Real CO2(domain = omega, unit = "m3/m3") "CO2 concentration";
-    field Real va_S(domain = omega, unit = "m3/m3") "velocity of advection";
+    field Real va_S(domain = omega, unit = "m/s") "velocity of advection";
     parameter Real D = 0.00003 "coefficient of diffusion in snow [m2/s]";
     parameter Real CO2_out = 0 "CO2 concentration out of the sphere";
     parameter Real CO2_init = 0 "initial CO2 concentartion";

@@ -12,16 +12,16 @@ model SnowBreathing_Models_SnowBreathingCO2O2_FLAT
   parameter Real lungs_T_L(unit = "s") = 4.0 "breathing period [s]";
   parameter Real lungs_V_max_L(unit = "m3") = 0.0048 "maximal useful lungs volume [m3]";
   parameter Real lungs_V_0_L(unit = "m3") = 0.001 "residual capacity [m3]";
-  parameter Real lungs_q_abs_L(unit = "m/s") = 2.0 * lungs_V_max_L / lungs_T_L "absolute value of air flux [m/s]";
+  parameter Real lungs_q_abs_L(unit = "m3/s") = 2.0 * lungs_V_max_L / lungs_T_L "absolute value of air flux [m3/s]";
   parameter Real lungs_VCO2_prod(unit = "m3/s") = 4e-006 "volume of CO2 produced per second [m3/s]";
   Real lungs_V(unit = "m3", start = lungs_V_max_L + lungs_V_0_L, fixed = true) "current lungs volume [m3]";
   Real lungs_VCO2(unit = "m3", start = 0.5 * lungs_VCO2_prod * lungs_T_L, fixed = true) "volume of C02 in lungs [m3]";
   Real lungs_CO2(unit = "m3/m3") "CO2 concentration in lungs";
-  Real lungs_VO2(unit = "m3", start = 0.2 * (lungs_V_max_L + lungs_V_0_L) - 0.5 * lungs_VCO2_prod * lungs_T_L, fixed = true) "volume of C02 in lungs [m3]";
+  Real lungs_VO2(unit = "m3", start = 0.2 * (lungs_V_max_L + lungs_V_0_L)  -0.5 * lungs_VCO2_prod * lungs_T_L, fixed = true) "volume of C02 in lungs [m3]";
   Real lungs_O2(unit = "m3/m3") "O2 concentration in lungs";
   parameter Real cavity_V(unit = "m3") = V_cavity;
   Real cavity_VCO2(unit = "m3");
-  Real cavity_CO2(unit = "m3", start = 0.0);
+  Real cavity_CO2(unit = "m3/m3", start = 0.0);
   Real cavity_fluxConcA_q(unit = "m3/s") "Volume flow rate from the connection point into the component";
   Real cavity_fluxConcA_CO2(unit = "1") "CO2 volume concentration";
   Real cavity_fluxConcA_O2(unit = "1") "O2 volume concentration";
@@ -45,10 +45,10 @@ model SnowBreathing_Models_SnowBreathingCO2O2_FLAT
   Real difussionSphere_CO2_2(unit = "m3/m3") "CO2 concentration";
   Real difussionSphere_CO2_3(unit = "m3/m3") "CO2 concentration";
   Real difussionSphere_CO2_4(unit = "m3/m3") "CO2 concentration";
-  Real difussionSphere_va_S_1(unit = "m3/m3") "velocity of advection";
-  Real difussionSphere_va_S_2(unit = "m3/m3") "velocity of advection";
-  Real difussionSphere_va_S_3(unit = "m3/m3") "velocity of advection";
-  Real difussionSphere_va_S_4(unit = "m3/m3") "velocity of advection";
+  Real difussionSphere_va_S_1(unit = "m/s") "velocity of advection";
+  Real difussionSphere_va_S_2(unit = "m/s") "velocity of advection";
+  Real difussionSphere_va_S_3(unit = "m/s") "velocity of advection";
+  Real difussionSphere_va_S_4(unit = "m/s") "velocity of advection";
   parameter Real difussionSphere_D = 3e-005 "coefficient of diffusion in snow [m2/s]";
   parameter Real difussionSphere_CO2_out = 0.0 "CO2 concentration out of the sphere";
   parameter Real difussionSphere_CO2_init = 0.0 "initial CO2 concentartion";
@@ -75,7 +75,7 @@ model SnowBreathing_Models_SnowBreathingCO2O2_FLAT
   Real temperatureStep_fluxConcB_O2(unit = "1") "O2 volume concentration";
   parameter Real temperatureStep_TA(unit = "K") = 310.15 "temperature A, °K";
   parameter Real temperatureStep_TB(unit = "K") = 273.15 "temperature B, °K";
-initial equation 
+initial equation
   difussionSphere_O2_1 = difussionSphere_O2_init "O2 initial concentartion";
   difussionSphere_O2_2 = difussionSphere_O2_init "O2 initial concentartion";
   difussionSphere_O2_3 = difussionSphere_O2_init "O2 initial concentartion";
@@ -84,7 +84,7 @@ initial equation
   difussionSphere_CO2_2 = difussionSphere_CO2_init "CO2 concentration initially 0";
   difussionSphere_CO2_3 = difussionSphere_CO2_init "CO2 concentration initially 0";
   difussionSphere_CO2_4 = difussionSphere_CO2_init "CO2 concentration initially 0";
-equation 
+equation
   der(lungs_VO2) = lungs_q * smooth(0, if lungs_fluxConcA_q > 0.0 then temperatureStep_fluxConcA_O2 else lungs_fluxConcA_O2) - lungs_VCO2_prod "CO2 volume given by breathing and metabolic consumption";
   lungs_O2 = lungs_VO2 / lungs_V;
   lungs_fluxConcA_O2 = lungs_O2;
@@ -104,16 +104,16 @@ equation
   cavity_CO2 = cavity_VCO2 / cavity_V;
   cavity_fluxConcA_CO2 = cavity_CO2;
   cavity_fluxConcB_CO2 = cavity_CO2;
-  der(difussionSphere_CO2_1) + 0.5 * (0.07957747154594767 * difussionSphere_q / difussionSphere_omega_x_1 ^ 2.0 - 2.0 * difussionSphere_D / difussionSphere_omega_x_1) * (difussionSphere_CO2_2 - difussionSphere_CO2_ghostL) / difussionSphere_omega_dx - difussionSphere_D * (difussionSphere_CO2_ghostL - 2.0 * difussionSphere_CO2_1 + difussionSphere_CO2_2) / difussionSphere_omega_dx ^ 2.0 = 0.0 "the advection-diffusion equation";
-  der(difussionSphere_CO2_2) + 0.5 * (0.07957747154594767 * difussionSphere_q / difussionSphere_omega_x_2 ^ 2.0 - 2.0 * difussionSphere_D / difussionSphere_omega_x_2) * (difussionSphere_CO2_3 - difussionSphere_CO2_1) / difussionSphere_omega_dx - difussionSphere_D * (difussionSphere_CO2_1 - 2.0 * difussionSphere_CO2_2 + difussionSphere_CO2_3) / difussionSphere_omega_dx ^ 2.0 = 0.0 "the advection-diffusion equation";
-  der(difussionSphere_CO2_3) + 0.5 * (0.07957747154594767 * difussionSphere_q / difussionSphere_omega_x_3 ^ 2.0 - 2.0 * difussionSphere_D / difussionSphere_omega_x_3) * (difussionSphere_CO2_4 - difussionSphere_CO2_2) / difussionSphere_omega_dx - difussionSphere_D * (difussionSphere_CO2_2 - 2.0 * difussionSphere_CO2_3 + difussionSphere_CO2_4) / difussionSphere_omega_dx ^ 2.0 = 0.0 "the advection-diffusion equation";
-  der(difussionSphere_CO2_4) + 0.5 * (0.07957747154594767 * difussionSphere_q / difussionSphere_omega_x_4 ^ 2.0 - 2.0 * difussionSphere_D / difussionSphere_omega_x_4) * (difussionSphere_CO2_ghostR - difussionSphere_CO2_3) / difussionSphere_omega_dx - difussionSphere_D * (difussionSphere_CO2_3 - 2.0 * difussionSphere_CO2_4 + difussionSphere_CO2_ghostR) / difussionSphere_omega_dx ^ 2.0 = 0.0 "the advection-diffusion equation";
+  der(difussionSphere_CO2_1) + 0.5 * (0.07957747154594767 * difussionSphere_q / difussionSphere_omega_x_1 ^ 2.0  -2.0 * difussionSphere_D / difussionSphere_omega_x_1) * (difussionSphere_CO2_2 - difussionSphere_CO2_ghostL) / difussionSphere_omega_dx - difussionSphere_D * (difussionSphere_CO2_ghostL  -2.0 * difussionSphere_CO2_1 + difussionSphere_CO2_2) / difussionSphere_omega_dx ^ 2.0 = 0.0 "the advection-diffusion equation";
+  der(difussionSphere_CO2_2) + 0.5 * (0.07957747154594767 * difussionSphere_q / difussionSphere_omega_x_2 ^ 2.0  -2.0 * difussionSphere_D / difussionSphere_omega_x_2) * (difussionSphere_CO2_3 - difussionSphere_CO2_1) / difussionSphere_omega_dx - difussionSphere_D * (difussionSphere_CO2_1  -2.0 * difussionSphere_CO2_2 + difussionSphere_CO2_3) / difussionSphere_omega_dx ^ 2.0 = 0.0 "the advection-diffusion equation";
+  der(difussionSphere_CO2_3) + 0.5 * (0.07957747154594767 * difussionSphere_q / difussionSphere_omega_x_3 ^ 2.0  -2.0 * difussionSphere_D / difussionSphere_omega_x_3) * (difussionSphere_CO2_4 - difussionSphere_CO2_2) / difussionSphere_omega_dx - difussionSphere_D * (difussionSphere_CO2_2  -2.0 * difussionSphere_CO2_3 + difussionSphere_CO2_4) / difussionSphere_omega_dx ^ 2.0 = 0.0 "the advection-diffusion equation";
+  der(difussionSphere_CO2_4) + 0.5 * (0.07957747154594767 * difussionSphere_q / difussionSphere_omega_x_4 ^ 2.0  -2.0 * difussionSphere_D / difussionSphere_omega_x_4) * (difussionSphere_CO2_ghostR - difussionSphere_CO2_3) / difussionSphere_omega_dx - difussionSphere_D * (difussionSphere_CO2_3  -2.0 * difussionSphere_CO2_4 + difussionSphere_CO2_ghostR) / difussionSphere_omega_dx ^ 2.0 = 0.0 "the advection-diffusion equation";
   difussionSphere_O2_ghostL = if difussionSphere_exhale then cavity_fluxConcB_O2 else 2.0 * difussionSphere_O2_1 - difussionSphere_O2_2 "left BC duringexhalation, extrapolation during inhalation";
   difussionSphere_fluxConcB_O2 = difussionSphere_O2_ghostL;
-  der(difussionSphere_O2_1) + 0.5 * (0.07957747154594767 * difussionSphere_q / difussionSphere_omega_x_1 ^ 2.0 - 2.0 * difussionSphere_D / difussionSphere_omega_x_1) * (difussionSphere_O2_2 - difussionSphere_O2_ghostL) / difussionSphere_omega_dx - difussionSphere_D * (difussionSphere_O2_ghostL - 2.0 * difussionSphere_O2_1 + difussionSphere_O2_2) / difussionSphere_omega_dx ^ 2.0 = 0.0 "the advection-diffusion equation";
-  der(difussionSphere_O2_2) + 0.5 * (0.07957747154594767 * difussionSphere_q / difussionSphere_omega_x_2 ^ 2.0 - 2.0 * difussionSphere_D / difussionSphere_omega_x_2) * (difussionSphere_O2_3 - difussionSphere_O2_1) / difussionSphere_omega_dx - difussionSphere_D * (difussionSphere_O2_1 - 2.0 * difussionSphere_O2_2 + difussionSphere_O2_3) / difussionSphere_omega_dx ^ 2.0 = 0.0 "the advection-diffusion equation";
-  der(difussionSphere_O2_3) + 0.5 * (0.07957747154594767 * difussionSphere_q / difussionSphere_omega_x_3 ^ 2.0 - 2.0 * difussionSphere_D / difussionSphere_omega_x_3) * (difussionSphere_O2_4 - difussionSphere_O2_2) / difussionSphere_omega_dx - difussionSphere_D * (difussionSphere_O2_2 - 2.0 * difussionSphere_O2_3 + difussionSphere_O2_4) / difussionSphere_omega_dx ^ 2.0 = 0.0 "the advection-diffusion equation";
-  der(difussionSphere_O2_4) + 0.5 * (0.07957747154594767 * difussionSphere_q / difussionSphere_omega_x_4 ^ 2.0 - 2.0 * difussionSphere_D / difussionSphere_omega_x_4) * (difussionSphere_O2_ghostR - difussionSphere_O2_3) / difussionSphere_omega_dx - difussionSphere_D * (difussionSphere_O2_3 - 2.0 * difussionSphere_O2_4 + difussionSphere_O2_ghostR) / difussionSphere_omega_dx ^ 2.0 = 0.0 "the advection-diffusion equation";
+  der(difussionSphere_O2_1) + 0.5 * (0.07957747154594767 * difussionSphere_q / difussionSphere_omega_x_1 ^ 2.0  -2.0 * difussionSphere_D / difussionSphere_omega_x_1) * (difussionSphere_O2_2 - difussionSphere_O2_ghostL) / difussionSphere_omega_dx - difussionSphere_D * (difussionSphere_O2_ghostL  -2.0 * difussionSphere_O2_1 + difussionSphere_O2_2) / difussionSphere_omega_dx ^ 2.0 = 0.0 "the advection-diffusion equation";
+  der(difussionSphere_O2_2) + 0.5 * (0.07957747154594767 * difussionSphere_q / difussionSphere_omega_x_2 ^ 2.0  -2.0 * difussionSphere_D / difussionSphere_omega_x_2) * (difussionSphere_O2_3 - difussionSphere_O2_1) / difussionSphere_omega_dx - difussionSphere_D * (difussionSphere_O2_1  -2.0 * difussionSphere_O2_2 + difussionSphere_O2_3) / difussionSphere_omega_dx ^ 2.0 = 0.0 "the advection-diffusion equation";
+  der(difussionSphere_O2_3) + 0.5 * (0.07957747154594767 * difussionSphere_q / difussionSphere_omega_x_3 ^ 2.0  -2.0 * difussionSphere_D / difussionSphere_omega_x_3) * (difussionSphere_O2_4 - difussionSphere_O2_2) / difussionSphere_omega_dx - difussionSphere_D * (difussionSphere_O2_2  -2.0 * difussionSphere_O2_3 + difussionSphere_O2_4) / difussionSphere_omega_dx ^ 2.0 = 0.0 "the advection-diffusion equation";
+  der(difussionSphere_O2_4) + 0.5 * (0.07957747154594767 * difussionSphere_q / difussionSphere_omega_x_4 ^ 2.0  -2.0 * difussionSphere_D / difussionSphere_omega_x_4) * (difussionSphere_O2_ghostR - difussionSphere_O2_3) / difussionSphere_omega_dx - difussionSphere_D * (difussionSphere_O2_3  -2.0 * difussionSphere_O2_4 + difussionSphere_O2_ghostR) / difussionSphere_omega_dx ^ 2.0 = 0.0 "the advection-diffusion equation";
   difussionSphere_O2_ghostR = if difussionSphere_exhale then 2.0 * difussionSphere_O2_4 - difussionSphere_O2_3 else difussionSphere_O2_out "right/outer BC or extrapolation";
   difussionSphere_q = difussionSphere_fluxConcB_q;
   difussionSphere_exhale = difussionSphere_q > 0.0;
