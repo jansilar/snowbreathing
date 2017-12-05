@@ -5,7 +5,7 @@ model DifusionSphereCO2O2SolTest
     Placement(visible = true, transformation(origin = {-62, 4}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   Components.PumpConstCO2O2 pumpConst21(q = 0.00001) annotation(
     Placement(visible = true, transformation(origin = {-4, 4}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-Components.DifussionSphereCO2O2Sol difussionSphereCO2O2Sol1(O2_init = 0)  annotation(
+Components.DifussionSphereCO2O2 difussionSphereCO2O2Sol1(useCO2Solubility = true, O2_init = 0)  annotation(
     Placement(visible = true, transformation(origin = {40, 4}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
 equation
   connect(pumpConst21.fluxConcB, difussionSphereCO2O2Sol1.fluxConcB) annotation(
