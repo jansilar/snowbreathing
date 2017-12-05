@@ -5,7 +5,7 @@ model DifussionSphereCO2
     Real solubilityCoeff(unit = "1") = if useCO2Solubility then (1 + MmCO2 * kH * P *  wc / rho_CO2) else 1;
     //Snow
     constant Real pi = Modelica.Constants.pi;
-    DomainLineSegment1D omega(L = R_out, N = 4, x0 = R_in) "in 1D, left is boundary of the central cavity of diameter x0, x coordinate is actually r";
+    DomainLineSegment1D omega(L = R_out, N = 100, x0 = R_in) "in 1D, left is boundary of the central cavity of diameter x0, x coordinate is actually r";
     Real q "volume flow rate";
     Boolean exhale;
     field Real CO2(domain = omega, unit = "m3/m3") "CO2 concentration";
