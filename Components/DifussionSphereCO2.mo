@@ -17,7 +17,7 @@ model DifussionSphereCO2
     
         parameter Real rho_CO2(unit = "kg/m3") = 1.977 "kg/m3 (gas at 1 atm and 0 °C)";
     parameter Real rho_air(unit = "kg/m3") = 1.2922 "kg/m3 (gas at 1 atm and 0 °C)";
-    parameter Real kH(unit = "mol/kg*Pa") = 0.034 * 1e-5 "mol/kg*Pa (at 25°C) TODO: get value for 0°C!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
+    parameter Real kH(unit = "mol/kg.Pa") = 0.034 * 1e-5 "mol/kg*Pa (at 25°C) TODO: get value for 0°C!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
     parameter Real wc(unit = "kg/m3") = 10 "kg/m^3 water content in snow";
     parameter Real P(unit = "Pa") = 100000 "Pa";
     parameter Real MmCO2(unit = "kg/mol") = 44.0095 * 1.0e-3 "kg/mol CO2 molar mass";
