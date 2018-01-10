@@ -35,16 +35,27 @@ def removePlusMinus(str):
     str = pmRe.sub(r'-', str)
     return str
 
-def discretize(omc, toInstantiate):
-    modelStr = omCommand("instantiateModel(" + toInstantiate + ")", omc);
-    modelStr = removeDotsAndBrackets(modelStr);
-    modelStr = removeDomainAndRegion(modelStr);
+def manageModelName(str,nameUnqual):
+    str = str.replace("class SnowBreathing_Components_" + nameUnqual, "within SnowBreathing.Components;\n"
+                                                                     +"model " + nameUnqual + "_discretised")
+    str = str.replace("end SnowBreathing_Components_" + nameUnqual + ";", "end " + nameUnqual + "_discretised" + ";")
+    return str
+
+def removeNonAscii(str):
+    return re.sub(r'[^\x00-\x7F]+', ' ', str)
+
+def discretize(omc, nameUnqual, nameQual):
+    modelStr = omCommand("instantiateModel(" + nameQual + ")", omc)
+    modelStr = removeDotsAndBrackets(modelStr)
+    modelStr = removeDomainAndRegion(modelStr)
     modelStr = removePlusMinus(modelStr)
+    modelStr = manageModelName(modelStr, nameUnqual)
+    #modelStr = removeNonAscii(modelStr)
     print("done!\n");
     return modelStr
 
 def createDiscretizedLib():
-    os.chdir("./..")
+    #os.chdir("./..")
 
     # copy all files:
     dirD = "Discretized";
@@ -64,8 +75,8 @@ def createDiscretizedLib():
                 shutil.copy(src, dst)
 #discretize PDEModelica:
     toDiscretize = [
-        ("Components/DifussionSphereCO2.mo",  "SnowBreathing.Components.DifussionSphereCO2"),
-        ("Components/DifussionSphereCO2O2.mo","SnowBreathing.Components.DifussionSphereCO2O2")
+        "DifussionSphereCO2",
+        "DifussionSphereCO2O2"
     ]
 
     omc = OMPython.OMCSessionZMQ();
@@ -74,16 +85,18 @@ def createDiscretizedLib():
     omCommandP("setCommandLineOptions(\"--grammar=PDEModelica\")", omc)
     omCommandP("loadModel(Modelica)", omc)
     omCommandP("loadFile(\"" + dirSB + "/package.mo" + "\")", omc)
-    for m in toDiscretize:
-        (fileName, name) = m
-        fileName = dirD + "/" + dirSB + "/" + fileName
-        modelStr = discretize(omc, name)
+    for nameUnqual in toDiscretize:
+        fileName = dirD + "/" + dirSB + "/" +"Components/" + nameUnqual + "_discretised.mo"
+        nameQual = "SnowBreathing.Components." + nameUnqual
+        modelStr = discretize(omc, nameUnqual, nameQual)
         dirname = os.path.dirname(fileName)
         if not os.path.exists(dirname):
             os.makedirs(dirname)
         F = open(fileName,"wt+")
-        F.write(modelStr.encode("utf8"))
+#        F.write(modelStr.encode("utf8"))
+        F.write(modelStr)
         F.close()
+        shutil.copy("./AuxMo/" + nameUnqual + ".mo", dirD + "/SnowBreathing/Components/" + nameUnqual + ".mo")
 
 
 createDiscretizedLib();

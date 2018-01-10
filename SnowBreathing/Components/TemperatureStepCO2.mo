@@ -5,7 +5,7 @@ model TemperatureStepCO2
     Placement(visible = true, transformation(origin = {-94, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0), iconTransformation(origin = {-90, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   replaceable SnowBreathing.Connectors.FluxConcCO2B fluxConcB annotation(
     Placement(visible = true, transformation(origin = {74, 2}, extent = {{-10, -10}, {10, 10}}, rotation = 0), iconTransformation(origin = {90, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  parameter Real TA(unit = "K") = 310.15 "temperature A, °K", TB(unit = "K") = 273.15 "temperature B, °K";
+  parameter Real TA(unit = "K") = 310.15 "temperature A, degK", TB(unit = "K") = 273.15 "temperature B, degK";
 equation
   inStream(fluxConcA.CO2) = fluxConcB.CO2;
   fluxConcA.CO2           = inStream(fluxConcB.CO2);
