@@ -85,6 +85,7 @@ def createDiscretizedLib():
     omCommandP("setCommandLineOptions(\"--grammar=PDEModelica\")", omc)
     omCommandP("loadModel(Modelica)", omc)
     omCommandP("loadFile(\"" + dirSB + "/package.mo" + "\")", omc)
+    pOFile = open(dirD + "/" + dirSB + "/" + "Components/package.order", "a")
     for nameUnqual in toDiscretize:
         fileName = dirD + "/" + dirSB + "/" +"Components/" + nameUnqual + "_discretised.mo"
         nameQual = "SnowBreathing.Components." + nameUnqual
@@ -97,8 +98,12 @@ def createDiscretizedLib():
         F.write(modelStr)
         F.close()
         shutil.copy("./AuxMo/" + nameUnqual + ".mo", dirD + "/SnowBreathing/Components/" + nameUnqual + ".mo")
-
-
+        pOFile.write(nameUnqual+"_discretised\n")
+    pOFile.close()
 createDiscretizedLib();
 #print(discretize("./SnowBreathing/package.mo", "SnowBreathing.Components.DifussionSphereCO2"))
 
+#TODO: in discretised files yet manualy
+#    - delete the fluxConc_q = 0; equation
+#    - add the fluxConc_CO2(O2)In variable
+#    - modify the boundary condition to incorporate the ..In var.
