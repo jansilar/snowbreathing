@@ -73,7 +73,7 @@ def createDiscretizedLib():
                 shutil.copytree(src, dst)
             else:
                 shutil.copy(src, dst)
-#discretize PDEModelica:
+    #discretize PDEModelica:
     toDiscretize = [
         "DifussionSphereCO2",
         "DifussionSphereCO2O2"
@@ -94,16 +94,31 @@ def createDiscretizedLib():
         if not os.path.exists(dirname):
             os.makedirs(dirname)
         F = open(fileName,"wt+")
-#        F.write(modelStr.encode("utf8"))
+        #F.write(modelStr.encode("utf8"))
         F.write(modelStr)
         F.close()
         shutil.copy("./AuxMo/" + nameUnqual + ".mo", dirD + "/SnowBreathing/Components/" + nameUnqual + ".mo")
         pOFile.write(nameUnqual+"_discretised\n")
     pOFile.close()
+    print("Automatic discretization finished. You have to make this changes manually:\n" +
+          "    - delete the fluxConcB_q = 0; equation\n" +
+          "    - add the fluxConc_CO2(O2)In variable\n" +
+          "           Real fluxConcB_CO2In(unit=\"1\") \"CO2 volume concentration\";\n" +
+          "           Real fluxConcB_O2In(unit=\"1\") \"CO2 volume concentration\";\n" +
+          "    - modify the boundary condition to incorporate the ..In var. \n" +
+          "           CO2_ghostL = if exhale then fluxConcB_CO2In else 2.0 * CO2_1 - CO2_2;\n" +
+          "           O2_ghostL = if exhale then fluxConcB_O2In else 2.0 * O2_1 - O2_2;\n")
+
+
 createDiscretizedLib();
 #print(discretize("./SnowBreathing/package.mo", "SnowBreathing.Components.DifussionSphereCO2"))
 
 #TODO: in discretised files yet manualy
-#    - delete the fluxConc_q = 0; equation
+#    - delete the fluxConcB_q = 0; equation
 #    - add the fluxConc_CO2(O2)In variable
+#           Real fluxConcB_CO2In(unit="1") "CO2 volume concentration";
+#           Real fluxConcB_O2In(unit="1") "CO2 volume concentration";
+
 #    - modify the boundary condition to incorporate the ..In var.
+#           CO2_ghostL = if exhale then fluxConcB_CO2In else 2.0 * CO2_1 - CO2_2 "left BC duringexhalation, extrapolation during inhalation";
+#           O2_ghostL = if exhale then fluxConcB_O2In else 2.0 * O2_1 - O2_2 "left BC duringexhalation, extrapolation during inhalation";
