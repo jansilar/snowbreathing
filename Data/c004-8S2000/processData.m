@@ -13,6 +13,23 @@ fTD = 1;
 fW = 25;
 fWD = 25;
 
+rowsT = [1 30];
+#rowsTD = [1 30];
+rowsW = [1:5];
+#rowsWD = [1:5];
+
+#crop times
+cropT = [194 1170];
+#cropfTD;
+cropW = [302 1125];
+#cropfWD;
+
+#time when the cone was disconnected (after first crop):
+tEndT = 964;
+#tEndTD
+tEndW = 972;
+#tEndWD
+
 
 #offsets in ms:
 offsetT = 0;
