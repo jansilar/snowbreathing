@@ -3,11 +3,12 @@ within SnowBreathing.Models;
 model SnowBreathingCO2O2SolTrap
     constant Real pi = Modelica.Constants.pi;
     parameter Real V_cavity = 0.001;
+    parameter Real R = (V_cavity*3.0/(4.0*pi))^(1.0/3.0);
     SnowBreathing.Components.LungsCO2O2Trap lungs annotation(
       Placement(visible = true, transformation(origin = {-62, -20}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
     SnowBreathing.Components.CavityCO2O2 cavity(V = V_cavity) annotation(
       Placement(visible = true, transformation(origin = {-2, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    SnowBreathing.Components.DifussionSphereCO2O2 difussionSphereCO2O2Sol1(useCO2Solubility = true) annotation(
+    SnowBreathing.Components.DifussionSphereCO2O2 difussionSphereCO2O2Sol1(useCO2Solubility = true, R_in = R) annotation(
       Placement(visible = true, transformation(origin = {48, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
     SnowBreathing.Components.TemperatureStepCO2O2 temperatureStepCO2O21 annotation(
       Placement(visible = true, transformation(origin = {-34, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
@@ -18,4 +19,5 @@ equation
       Line(points = {{-25, 0}, {-6, 0}}, color = {170, 170, 0}));
     connect(lungs.fluxConcA, temperatureStepCO2O21.fluxConcA) annotation(
       Line(points = {{-61, -11}, {-61, 0}, {-43, 0}}, color = {0, 12, 255}));
-end SnowBreathingCO2O2SolTrap;
+annotation(
+    experiment(StartTime = 0, StopTime = 600, Tolerance = 1e-6, Interval = 0.1));end SnowBreathingCO2O2SolTrap;
