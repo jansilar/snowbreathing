@@ -1,1 +1,0 @@
-This folder contains scripts for data conversion. Data are expected to be in the /Data folder.
