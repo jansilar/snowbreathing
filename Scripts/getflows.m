@@ -1,5 +1,5 @@
 %% Head
-
+pkg load signal
 %  data_dir = 'c004-8S2000';
   data_dir = 'c004-11m2000';
   file = ["..\\Data\\" data_dir "\\" data_dir 'wavesDots.asc'];
@@ -27,6 +27,7 @@ co2avg = shift(filter(sl_av, 1, co2), -ceil(filt_L/2 - 1));
 o2avg = shift(filter(sl_av, 1, o2), -ceil(filt_L/2 - 1));  
 pressavg = shift(filter(sl_av, 1, press), -ceil(filt_L/2 - 1));  
 flowavg = shift(filter(sl_av, 1, flow), -ceil(filt_L/2 - 1));
+volavg = shift(filter(sl_av, 1, vol), -ceil(filt_L/2 - 1));
 
 %figure(1);clf;hold on; plot(co2, 'r');plot(co2avg, 'g')  ;
 
@@ -52,7 +53,7 @@ BRf = shift(filter(sl_av, 1, BR), -ceil(filt_L/2 - 1));
 figure(); 
 clf; hold on;
 plot(ploc, BR, 'm');plot(ploc, BRf, 'g');
-plot(ploc, BL, '-og');plot(co2avg);
+plot(ploc, co2avg(ploc), '--og');plot(co2avg);
 %}
 
 %% get mass flow - o2, co2
@@ -141,20 +142,7 @@ for i = 1:length(rng)
   figure(f1); plot((1:N)(secs), co2avg(secs), previewStyle{i}); figure(f2);
 endfor
 
-rng = 9700:10200; secs = [false(1, rng(1)-1) validity(rng) false(1, N-rng(end))];
-plot(pressavg(secs), flowavg(secs), );
-figure(3); plot((1:N)(secs), co2avg(secs), 'm'); figure(2);
-
-rng = 11200:11600; secs = [false(1, rng(1)-1) validity(rng) false(1, N-rng(end))];
-plot(pressavg(secs), flowavg(secs), );
-figure(3); plot((1:N)(secs), co2avg(secs), 'r'); figure(2);
-
-rng = 14350:14600; secs = [false(1, rng(1)-1) validity(rng) false(1, N-rng(end))];
-plot(pressavg(secs), flowavg(secs), );
-figure(3); plot((1:N)(secs), co2avg(secs), 'g'); figure(2);
-
-
-
+%{
 clf; plot(secs);
 figure(4);hold on; plot(pressavg(secs), flowavg(secs), 'or');
 figure(3); clf; hold on; plot(pressavg/4); plot(flowavg/100);
@@ -167,4 +155,4 @@ figure(1);
 clf; hold on; plot(x, flowavg(validity), x, flowavg(validity).^2, x, sign(flowavg(validity)).*flowavg(validity).^2); 
 hold on; plot(x(validity), res, '-xg'); 
 plot(resavg);plot(vol/4000);
-
+%}
