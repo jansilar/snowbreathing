@@ -1,6 +1,7 @@
 %% Head
 
-  data_dir = 'c004-8S2000';
+%  data_dir = 'c004-8S2000';
+  data_dir = 'c004-11m2000';
   file = ["..\\Data\\" data_dir "\\" data_dir 'wavesDots.asc'];
   rowsW = [1, 2, 3, 4, 5];
   fs = 25;
@@ -9,8 +10,8 @@
   data_raw_read = importdata(file,"\t",3).data(:,rowsW);
   
   % crop to 8k to 24k5
-  data = data_raw_read(8000:24500, :);
-%  data = data_raw_read(14000:24500, :);
+% data = data_raw_read(8000:24500, :);
+  data = data_raw_read;
 
   N = length(data);
   co2 = data(:, 1).';
@@ -25,6 +26,7 @@ sl_av = ones(1, filt_L)/filt_L;
 co2avg = shift(filter(sl_av, 1, co2), -ceil(filt_L/2 - 1));  
 o2avg = shift(filter(sl_av, 1, o2), -ceil(filt_L/2 - 1));  
 pressavg = shift(filter(sl_av, 1, press), -ceil(filt_L/2 - 1));  
+flowavg = shift(filter(sl_av, 1, flow), -ceil(filt_L/2 - 1));
 
 %figure(1);clf;hold on; plot(co2, 'r');plot(co2avg, 'g')  ;
 
@@ -54,15 +56,16 @@ plot(ploc, BL, '-og');plot(co2avg);
 %}
 
 %% get mass flow - o2, co2
-flowavg = shift(filter(sl_av, 1, flow), -ceil(filt_L/2 - 1));
 % figure();hold on; plot(flow);plot(flowavg);
   % we assume the same place of measurement
   co2mass = co2avg.*flowavg;
   o2mass = o2avg.*  flowavg;
-% figure();
+%{
+figure();
 clf;hold on; plot(co2avg);plot(flowavg);plot(co2mass);plot(zeros(1, N));
 clf;hold on; plot(o2avg);plot(flowavg);plot(o2mass);plot(zeros(1, N));
 clf;hold on; plot(co2mass);plot(o2mass);
+%}
 
 %% get cumulative amount of o2 and co2
 
@@ -106,11 +109,10 @@ plot(flowavg/50, '-g');
 
 
 %% flows and resistances
- flow2 = [vol(2:end) - vol(1:end - 1) 0]; 
  
 % clf;hold on; plot(flow);plot(flow2);
 validity = abs(flowavg) > 5;
-f = flowavg(validity)
+f = flowavg(validity);
 res = pressavg(validity) ./ flowavg(validity);
 x = 1:length(validity);
 x = x(validity);
@@ -118,23 +120,37 @@ res(abs(res) > .5) = 0;
 resavg = shift(filter(sl_av, 1, res), -ceil(filt_L/2 - 1));
 
 
-figure(3);clf;hold on; plot(co2avg, 'k');
-figure(2); clf; hold on;
+% 8S2000
+%rng = {1900:2222, 5900:6290, 7200:7600, 11640:11960};
 
-rng = 1900:2222; secs = [false(1, rng(1)-1) validity(rng) false(1, N-rng(end))];
-plot(pressavg(secs), flowavg(secs), 'xb');
-figure(3); plot((1:N)(secs), co2avg(secs), 'b'); figure(2);
+% 11m2000
+rng = {7400:7800, 9700:10200, 11200:11600,14350:14600};
 
-rng = 5900:6290; secs = [false(1, rng(1)-1) validity(rng) false(1, N-rng(end))];
-plot(pressavg(secs), flowavg(secs), 'om');
+
+
+f1 = 4;
+f2 = 5;
+figure(f1);clf;hold on; plot(co2avg, 'k');
+figure(f2); clf; hold on;
+graphStyle = {'xb', 'om', 'xr', 'og'};
+previewStyle = {'b', 'm', 'r', 'g'};
+
+for i = 1:length(rng)
+  secs = [false(1, rng{i}(1)-1) validity(rng{i}) false(1, N-rng{i}(end))];
+  plot(pressavg(secs), flowavg(secs), graphStyle{i});
+  figure(f1); plot((1:N)(secs), co2avg(secs), previewStyle{i}); figure(f2);
+endfor
+
+rng = 9700:10200; secs = [false(1, rng(1)-1) validity(rng) false(1, N-rng(end))];
+plot(pressavg(secs), flowavg(secs), );
 figure(3); plot((1:N)(secs), co2avg(secs), 'm'); figure(2);
 
-rng = 7200:7600; secs = [false(1, rng(1)-1) validity(rng) false(1, N-rng(end))];
-plot(pressavg(secs), flowavg(secs), 'xr');
+rng = 11200:11600; secs = [false(1, rng(1)-1) validity(rng) false(1, N-rng(end))];
+plot(pressavg(secs), flowavg(secs), );
 figure(3); plot((1:N)(secs), co2avg(secs), 'r'); figure(2);
 
-rng = 11640:11960; secs = [false(1, rng(1)-1) validity(rng) false(1, N-rng(end))];
-plot(pressavg(secs), flowavg(secs), 'og');
+rng = 14350:14600; secs = [false(1, rng(1)-1) validity(rng) false(1, N-rng(end))];
+plot(pressavg(secs), flowavg(secs), );
 figure(3); plot((1:N)(secs), co2avg(secs), 'g'); figure(2);
 
 
