@@ -6,6 +6,15 @@ fileTD = 'dutina-c004-8S2000-trends.txt';
 fileW = 'c004-8S2000waves.txt';
 fileWD = 'dutina-c004-8S2000-waves-tr.txt';
 
+varNameT = {"HR", "SpO2"};
+varNameW = {"CO2", "O2", "Paw", "Flow", "Vol"};
+varNameWD = {"Pleth" "CO2_D", "O2_D"};
+
+#columns plotted to find the offsets:
+varIT = 1;
+varIW = 1;
+varIWD = 1;
+
 #sample frequencies (Hz):
 fT = 1;
 fTD = 1;

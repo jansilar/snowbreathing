@@ -13,7 +13,7 @@ function x2 = createX(data, f1, f2)
   dx2 = 1.0/f2;
   x2 = 0:dx2:endX;
 endfunction;
-
+          
 #resample function:
 function [x2,dataRe] = resampleX(data,f1,f2)
 #  rows = size(data)(1)
@@ -39,31 +39,32 @@ endfunction;
 
 function [x, data] = processOne(file, columns, filePath, f1, f2, crop, tEnd, varI, varName)
   #read the data from file:
+  ["reading " filePath file]
   data = importdata([filePath file],"\t",3).data(:,columns);
   #resample data, return new time grid as well. f1 .. original sample rate, f2 .. new sample rate.
   [x, data] = resampleX(data,f1,f2);
   #------------------ Uncoment to find crop time range (crop_): ----------------------
   #plot(x,data(:,varI));
-  #exit("Find the times to crop out the nonsens data on boundaries.")
+  #error("Find the times to crop out the nonsens data on boundaries.")
   #---------------------------------------------------------------------------
   
   #crop the starting and final data with nonsens values
   [x,data] = cropData(x,data,crop);
   
   #----------------- Uncomment to find the time, when cone was disconnected (tEnd_)------
-  #plot(x,data(:,varI));
-  #exit("Find the time, when cone was disconnected")
+#  plot(x,data(:,varI));
+#  exit("Find the time, when cone was disconnected")
   #--------------------------------------------------------------------------------------
 
   #offset in time so that the zero time is in the end, when snow cpme was dosconnected
   x = doOffset(x,tEnd, f2);
   
   #------------ Uncomment to see the result ----------------------------
-  #  plot(x,data(:,varI));
-  #  title(file);
-  #  xlabel("time [s]");
-  #  ylabel(varName(varI));
-  #  exit("See one processed dataset");
+#    plot(x,data(:,varI));
+#    title(file);
+#    xlabel("time [s]");
+#    ylabel(varName(varI));
+#    exit("See one processed dataset");
   #---------------------------------------------------------------------
 endfunction;
 
@@ -123,21 +124,12 @@ function processData(dir)
   #offsets = [offsetT offsetTD offsetW offsetWD];
 
 
-  varNameT = {"HR", "SpO2"};
-  varNameW = {"CO2", "O2", "Paw", "Flow", "Vol"};
-  varNameWD = {"CO2_D", "O2_D"};
 
   close all;
 
-  #columns plotted to find the offsets:
-  varIT = 1;
-  varIW = 3;
-  varIWD = 1;
   fTarget = 100;
   [xT, dataT] = processOne(fileT, columnT, filePath, fT , fTarget, cropT, tEndT, varIT, varNameT);
-  #figure;
   [xW, dataW] = processOne(fileW, columnW, filePath, fW , fTarget, cropW, tEndW, varIW, varNameW);
-  #figure;
   [xWD, dataWD] = processOne(fileWD, columnWD, filePath, fWD, fTarget, cropWD, tEndWD, varIWD, varNameWD);
 
   xdata = mergeData({xT, xW, xWD}, {dataT, dataW, dataWD});
@@ -153,6 +145,6 @@ function processData(dir)
   #plot(xdata(:,1),xdata(:,6))
 endfunction;  
 
-#directory with data:
-dir = "c004-8S2000";
-processData(dir);
+
+processData("c004-8S2000");
+processData("c004-4m2000");
