@@ -37,9 +37,9 @@ function xOut = doOffset(x,offset, f)
   xOut = x - offsetR;
 endfunction;
 
-function [x, data] = processOne(file, columns, dir, f1, f2, crop, tEnd, varI, varName)
+function [x, data] = processOne(file, columns, filePath, f1, f2, crop, tEnd, varI, varName)
   #read the data from file:
-  data = importdata(["./" dir "/" file],"\t",3).data(:,columns);
+  data = importdata([filePath file],"\t",3).data(:,columns);
   #resample data, return new time grid as well. f1 .. original sample rate, f2 .. new sample rate.
   [x, data] = resampleX(data,f1,f2);
   #------------------ Uncoment to find crop time range (crop_): ----------------------
@@ -100,22 +100,22 @@ function plotData(xData, varNames, iCol, multiplier)
 
 endfunction;
 
-function writeData(data, header, fileName)
+function writeData(data, header, file)
   textHeader = strjoin(header, '\t');
   %write header to file
-  fileName
-  fid = fopen(fileName,'w')
+  fid = fopen(file,'w')
   fprintf(fid,'%s\n',textHeader)
   fclose(fid)
   %write data to end of file
-  dlmwrite(fileName,data,"\t", '-append')
-  ["data written to " fileName " file\n"]
+  dlmwrite(file,data,"\t", '-append')
+  ["data written to " file " file\n"]
 endfunction;
   
 
 function processData(dir)
   #read the dataInfo file:
-  run(["./" dir "/data_info.m"])
+  filePath = ["../Data/" dir "/"]
+  run([filePath "/data_info.m"])
 
   files = {fileT; fileTD; fileW; fileWD};
   #frequencies:
@@ -134,11 +134,11 @@ function processData(dir)
   varIW = 3;
   varIWD = 1;
   fTarget = 100;
-  [xT, dataT] = processOne(fileT, columnT, dir, fT , fTarget, cropT, tEndT, varIT, varNameT);
+  [xT, dataT] = processOne(fileT, columnT, filePath, fT , fTarget, cropT, tEndT, varIT, varNameT);
   #figure;
-  [xW, dataW] = processOne(fileW, columnW, dir, fW , fTarget, cropW, tEndW, varIW, varNameW);
+  [xW, dataW] = processOne(fileW, columnW, filePath, fW , fTarget, cropW, tEndW, varIW, varNameW);
   #figure;
-  [xWD, dataWD] = processOne(fileWD, columnWD, dir, fWD, fTarget, cropWD, tEndWD, varIWD, varNameWD);
+  [xWD, dataWD] = processOne(fileWD, columnWD, filePath, fWD, fTarget, cropWD, tEndWD, varIWD, varNameWD);
 
   xdata = mergeData({xT, xW, xWD}, {dataT, dataW, dataWD});
   #xdata = mergeData({xT, xW}, {dataT, dataW});
@@ -148,7 +148,7 @@ function processData(dir)
   hold on;
   plotData(xdata, varNames, [1,3,8], [0.1, 1, 1]);
 
-  writeData(xdata, ["t" varNames], [dir "/" dir "_all.txt"])
+  writeData(xdata, ["t" varNames], [filePath dir "_all.txt"])
   #hold on;
   #plot(xdata(:,1),xdata(:,6))
 endfunction;  
