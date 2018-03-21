@@ -148,7 +148,7 @@ function processData(dir)
   hold on;
   plotData(xdata, varNames, [1,3,8], [0.1, 1, 1]);
 
-  writeData(xdata, ["t" varNames], [dir "/" dir "_all.csv"])
+  writeData(xdata, ["t" varNames], [dir "/" dir "_all.txt"])
   #hold on;
   #plot(xdata(:,1),xdata(:,6))
 endfunction;  
