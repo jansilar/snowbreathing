@@ -111,7 +111,22 @@ function writeData(data, header, file)
   dlmwrite(file,data,"\t", '-append')
   ["data written to " file " file\n"]
 endfunction;
-  
+
+function newData = avgDownsample(data,n)
+  #replace n consequent data samples by their average
+  newData = [];
+  nCols = size(data,2);
+  row = zeros(1,nCols);
+  iNew = 0;
+  for i = 1:size(data,1)
+    row = row + data(i,:);
+    if mod(i,n) == 0
+      newData = [newData; row/n];
+      row = zeros(1,nCols);
+    endif;
+  end;
+end;
+    
 
 function processData(dir)
   #read the dataInfo file:
@@ -138,13 +153,27 @@ function processData(dir)
   varNames = [varNameT, varNameW, varNameWD]
   figure;
   hold on;
-  plotData(xdata, varNames, [1,3,8], [0.1, 1, 1]);
+  plotData(xdata, varNames, [3, 4, 5, 6,  8, 9], [1, 1, 1, 0.2, 1, 1], "x");
 
   writeData(xdata, ["t" varNames], [filePath dir "_all.txt"])
+  CO2O2_100 = xdata(:,[1,9,10]);
+  CO2O2 = avgDownsample(CO2O2_100, 20);
+  save("-v4",[filePath "CO2O2.mat"], "CO2O2")  
+  Flow_100 = xdata(:,[1,7]);
+  Flow = avgDownsample(Flow_100,20);
+  save("-v4",[filePath "Flow.mat"], "Flow")  
+
+  figure;
+  plot(Flow_100(:,1),Flow_100(:,2));
+  figure;
+  plot(Flow(:,1),Flow(:,2));
+  
   #hold on;
   #plot(xdata(:,1),xdata(:,6))
 endfunction;  
 
 
-processData("c004-8S2000");
+
+
+#processData("c004-8S2000");
 processData("c004-4m2000");
