@@ -20,6 +20,26 @@ pkg load signal
   flow = data(:, 4).';
   vol = data(:, 5).';
 
+%% filter the positive saturationf rom the flow
+% there are sometimes -0.1 and -0.2 outliers
+flowvalid = flow != -0.1 & flow != -0.2;
+% TODO filter out oulier peaks - three data points in a row, one is out of fucks
+
+xflowvalid = (1:length(flow))(flowvalid);
+
+clf;hold on;plot(xflowvalid, flow(flowvalid));plot(flow);
+
+flowv = flow(flowvalid);
+flowvdif = [0, flowv(1:end-1) - flowv(2:end)];
+
+clf;hold on;plot(xflowvalid, flowv, '-o');plot(xflowvalid, flowvdif, '-d');
+
+% TODO filter the saturation
+% get negative peaks under 60, wait for positive peak over 60 - invalidate data inbetween
+% interpolate
+flowrepaired = interp1(xflowvalid, flowv, 1:N);
+clf;hold on;plot(flowrepaired, '-o');plot(flow, '-d');
+
 %% filter the singal by moving average
 filt_L = 8;
 sl_av = ones(1, filt_L)/filt_L;
