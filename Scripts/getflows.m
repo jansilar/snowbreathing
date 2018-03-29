@@ -21,24 +21,107 @@ pkg load signal
   vol = data(:, 5).';
 
 %% filter the positive saturationf rom the flow
-% there are sometimes -0.1 and -0.2 outliers
-flowvalid = flow != -0.1 & flow != -0.2;
+% there are sometimes -0.1 and -0.2 invalid data reads
+
+
 % TODO filter out oulier peaks - three data points in a row, one is out of fucks
 
-xflowvalid = (1:length(flow))(flowvalid);
 
-clf;hold on;plot(xflowvalid, flow(flowvalid));plot(flow);
 
-flowv = flow(flowvalid);
-flowvdif = [0, flowv(1:end-1) - flowv(2:end)];
+%% prefilter for invalid data reads and its neighbours
 
-clf;hold on;plot(xflowvalid, flowv, '-o');plot(xflowvalid, flowvdif, '-d');
+vargin = {flow, badReading = [-0.1, -0.2, -0.2], diffBounds = [-110, 40], maxWidth = 20};
+
+
+N = length(flow);
+a = flow != badReading';
+a = a(1, :) & a(1, :) & a(1, :);
+flowvalid = [false, a(1:end-2) & a(2: end-1) & a(3: end), false];
+
+flowv = interp1((1:N)(flowvalid), flow(flowvalid), 1:N, 'pchip');
+flowv(flowvalid) = flow(flowvalid);
+% find peaks of double derivative
+flowvdif = [flowv(1:end-1) - flowv(2:end), 0];
+%flowvdif2 = [0, flowvdif(1:end-1) - flowvdif(2:end)];
+%sat_loc = flowvdif2 > 50 | flowvdif2 < -50;
+
+%% filter out positive saturation - find a huge negative difference and search for a positive diff within some interval.
+sat = flowvalid;
+s1 = flowvdif < -110;
+s2 = [s1(1:end-1) & !(s1(2:end)), true];
+for i = 1:N-21;
+  if s2(i)
+    for j = i:i+20
+      if flowvdif(j) > 40
+        % found it!
+        sat(i:j+3) = false;
+        %break;
+      endif;
+    endfor;
+  endif;
+endfor;
+
+% TODO test spline inte
+flowv2 = interp1((1:N)(sat), flow(sat), 1:N, 'pchip');
+flowv2(sat) = flow(sat);
+
+%{
+figure(1)
+clf;hold on; plot(flow); 
+plot(flowv2, 'k'); 
+plot((1:N)(!sat), flowv(!sat), '*');
+plot((1:N)(sat_loc),flowvdif2(sat_loc), '*');
+%}
+%flowv2(sat) = flow(sat);
+clf;hold on; 
+plot(flow, '-g') ;
+plot(flowv2, 'b', 'LineWidth', 2); plot((1:N)((!sat)), flowv(!sat), 'r*');
+
+flow = flowv2;
+%plot(flowvdif);
+
+
+
+%% filter out peaks and its neighbours
+%sat_locn = [true, sat_loc(1:end-2) | sat_loc(2: end-1) | sat_loc(3: end), true];
+%flowvalid(sat_loc) = false;
+%flowv2 = interp1((1:N)(flowvalid), flow(flowvalid), 1:N);
+
+
+%{
+figure(1)
+clf;hold on; plot(flow); plot(flowv); plot(flowv2);plot(flowvdif2, 'm'); 
+plot((1:N)(!flowvalid),flowv2(!flowvalid), 'g*');
+
+plot((1:N)(sat_locn),ones(1,N)(sat_locn), 'go');
+%}
+
+%% scan again
+
+
+%figure(1)
+%clf;hold on; plot(flow); plot(flowv); plot(flowvdif2); 
+%plot((1:N)(sat_loc),flowvdif2(sat_loc), '*');
+%
+%clf;hold on;plot(xflowvalid, flowv, '-');plot(xflowvalid, flowvdif, '-d');plot(xflowvalid,flowvdif2, '-ms');
+%plot(xflowvalid(sat_loc), 0, 'rx');
+%figure;
+%
+%%% find consecutive peaks
+%clf;hold on;plot(flowvalid, 'r')
+%flowvalid(sat_loc) = false;
+%
+%kern = [1 1 1];
+%flowc = conv(flowvalid, [1/4, 1/4, 1/4, 1/4], 'same');
+
+
+% find peak, which has distance to next peak at least 6 and at most 
 
 % TODO filter the saturation
 % get negative peaks under 60, wait for positive peak over 60 - invalidate data inbetween
 % interpolate
-flowrepaired = interp1(xflowvalid, flowv, 1:N);
-clf;hold on;plot(flowrepaired, '-o');plot(flow, '-d');
+%flowrepaired = interp1(xflowvalid, flowv, 1:N);
+%clf;hold on;plot(flowrepaired, '-');plot(flowv, '-');
 
 %% filter the singal by moving average
 filt_L = 8;
@@ -145,7 +228,7 @@ resavg = shift(filter(sl_av, 1, res), -ceil(filt_L/2 - 1));
 %rng = {1900:2222, 5900:6290, 7200:7600, 11640:11960};
 
 % 11m2000
-rng = {7400:7800, 9700:10200, 11200:11600,14350:14600};
+rng = {7400:7800, 9700:10200, 10500:10800,14350:14600};
 
 
 
@@ -153,7 +236,7 @@ f1 = 4;
 f2 = 5;
 figure(f1);clf;hold on; plot(co2avg, 'k');
 figure(f2); clf; hold on;
-graphStyle = {'xb', 'om', 'xr', 'og'};
+graphStyle = {'xb', 'om', '-xr', 'og'};
 previewStyle = {'b', 'm', 'r', 'g'};
 
 for i = 1:length(rng)
