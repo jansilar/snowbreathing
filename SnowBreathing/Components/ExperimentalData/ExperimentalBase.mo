@@ -10,9 +10,9 @@ partial model ExperimentalBase
   Real CO2_act;
   Real O2_act;
 equation
-  combiTimeTableCO2O2.y[1] = fluxConcCO2O2.CO2;
-  combiTimeTableCO2O2.y[2] = fluxConcCO2O2.O2;
-  combiTimeTableFlow.y[1] = fluxConcCO2O2.q;
+  combiTimeTableCO2O2.y[1]/100 = fluxConcCO2O2.CO2; //percent to fraction
+  combiTimeTableCO2O2.y[2]/100 = fluxConcCO2O2.O2;  //percent to fraction
+  combiTimeTableFlow.y[1]/60000 = fluxConcCO2O2.q;  //units in table are l/min, we use m3/s
   CO2_act = actualStream(fluxConcCO2O2.CO2);
   O2_act = actualStream(fluxConcCO2O2.O2);
 end ExperimentalBase;

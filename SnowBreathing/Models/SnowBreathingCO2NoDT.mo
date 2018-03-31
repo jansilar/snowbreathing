@@ -14,4 +14,5 @@ equation
       Line(points = {{-76, 10}, {-76, 10}, {-76, 18}, {-12, 18}, {-12, 18}}, color = {0, 12, 255}));
     connect(cavity.fluxConcB, difussionSphere.fluxConcB) annotation(
       Line(points = {{0, 18}, {42, 18}}, color = {251, 255, 0}));
-end SnowBreathingCO2NoDT;
+annotation(
+    experiment(StartTime = 0, StopTime = 10, Tolerance = 1e-6, Interval = 0.02));end SnowBreathingCO2NoDT;
