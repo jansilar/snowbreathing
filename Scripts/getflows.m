@@ -1,9 +1,13 @@
 %% Head
 pkg load signal
+
+data_dir = 'c004-3m0200';
+%  data_dir = 'c004-4m2000';
 %  data_dir = 'c004-8S2000';
-  data_dir = 'c004-11m2000';
+%  data_dir = 'c004-11m2000';
   file = ["..\\Data\\" data_dir "\\" data_dir 'wavesDots.asc'];
-  rowsW = [1, 2, 3, 4, 5];
+%  rowsW = [1, 2, 3, 4, 5];
+  rowsW = [1, 2, 3, 4];
   fs = 25;
 
 %% load data - pCO2, pO2, Flow
@@ -20,8 +24,43 @@ pkg load signal
   flow = data(:, 4).';
   vol = data(:, 5).';
 
-flow = repairFlowData(flow);
+  
+ % dataset c004-11m2000
+%flow2 = repairFlowData(flow, [8030:8040,16387:16394, 16539:16552], [-0.1, -0.2, -0.2], [-110, 40, 20], true);
 
+ % dataset c004-8S2000
+%flow2 = repairFlowData(flow, [19545:19547], [-0.1, -0.2, -0.2], [-90, 40, 40], true);
+
+ % dataset c004-4m2000
+% flow2 = repairFlowData(flow, [7020:7076, 8700:8753, 13701:13754, 21542:21558, 22112:22121], [-0.1, -0.2, -0.2], [-90, 40, 30], true);
+
+ % dataset c004-3m0200
+ flow2 = repairFlowData(flow, [16873:16876, 12920:12929, 10827:10874, 7868:7917, 1696:1704],[0, -0.2, -0.2], [-60, 40, 30], true);
+
+ 
+ %% Test the volume  - cummulative sum of the flow
+ volf = cumsum(flow2);
+ 
+X = 1:N;
+
+pp = splinefit(X, volf, 1);
+tt = ppval(pp, X);
+
+figure(3); clf; hold on;
+plot(flow2*50, 'r');
+plot(volf, 'b');
+plot(tt, 'k', "LineWidth", 2);
+
+[X] = detrend(volf, 4);
+plot(X);
+
+
+plot(flow2r, 'b');
+plot(flow2, 'r');
+
+% filter out volume changes by interpolation over some value?
+satu = flow2 < 120 & flow2 > -114;
+flow2r = interp1((1:N)(satu), flow2(satu), 1:N, 'spline');
 
 
 %% filter out peaks and its neighbours
