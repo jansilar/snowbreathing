@@ -20,25 +20,50 @@ pkg load signal
   flow = data(:, 4).';
   vol = data(:, 5).';
 
-%% filter the positive saturationf rom the flow
-% there are sometimes -0.1 and -0.2 outliers
-flowvalid = flow != -0.1 & flow != -0.2;
-% TODO filter out oulier peaks - three data points in a row, one is out of fucks
+flow = repairFlowData(flow);
 
-xflowvalid = (1:length(flow))(flowvalid);
 
-clf;hold on;plot(xflowvalid, flow(flowvalid));plot(flow);
 
-flowv = flow(flowvalid);
-flowvdif = [0, flowv(1:end-1) - flowv(2:end)];
+%% filter out peaks and its neighbours
+%sat_locn = [true, sat_loc(1:end-2) | sat_loc(2: end-1) | sat_loc(3: end), true];
+%flowvalid(sat_loc) = false;
+%flowv2 = interp1((1:N)(flowvalid), flow(flowvalid), 1:N);
 
-clf;hold on;plot(xflowvalid, flowv, '-o');plot(xflowvalid, flowvdif, '-d');
+
+%{
+figure(1)
+clf;hold on; plot(flow); plot(flowv); plot(flowv2);plot(flowvdif2, 'm'); 
+plot((1:N)(!flowvalid),flowv2(!flowvalid), 'g*');
+
+plot((1:N)(sat_locn),ones(1,N)(sat_locn), 'go');
+%}
+
+%% scan again
+
+
+%figure(1)
+%clf;hold on; plot(flow); plot(flowv); plot(flowvdif2); 
+%plot((1:N)(sat_loc),flowvdif2(sat_loc), '*');
+%
+%clf;hold on;plot(xflowvalid, flowv, '-');plot(xflowvalid, flowvdif, '-d');plot(xflowvalid,flowvdif2, '-ms');
+%plot(xflowvalid(sat_loc), 0, 'rx');
+%figure;
+%
+%%% find consecutive peaks
+%clf;hold on;plot(flowvalid, 'r')
+%flowvalid(sat_loc) = false;
+%
+%kern = [1 1 1];
+%flowc = conv(flowvalid, [1/4, 1/4, 1/4, 1/4], 'same');
+
+
+% find peak, which has distance to next peak at least 6 and at most 
 
 % TODO filter the saturation
 % get negative peaks under 60, wait for positive peak over 60 - invalidate data inbetween
 % interpolate
-flowrepaired = interp1(xflowvalid, flowv, 1:N);
-clf;hold on;plot(flowrepaired, '-o');plot(flow, '-d');
+%flowrepaired = interp1(xflowvalid, flowv, 1:N);
+%clf;hold on;plot(flowrepaired, '-');plot(flowv, '-');
 
 %% filter the singal by moving average
 filt_L = 8;
@@ -145,7 +170,7 @@ resavg = shift(filter(sl_av, 1, res), -ceil(filt_L/2 - 1));
 %rng = {1900:2222, 5900:6290, 7200:7600, 11640:11960};
 
 % 11m2000
-rng = {7400:7800, 9700:10200, 11200:11600,14350:14600};
+rng = {7400:7800, 9700:10200, 10500:10800,14350:14600};
 
 
 
@@ -153,7 +178,7 @@ f1 = 4;
 f2 = 5;
 figure(f1);clf;hold on; plot(co2avg, 'k');
 figure(f2); clf; hold on;
-graphStyle = {'xb', 'om', 'xr', 'og'};
+graphStyle = {'xb', 'om', '-xr', 'og'};
 previewStyle = {'b', 'm', 'r', 'g'};
 
 for i = 1:length(rng)
