@@ -37,10 +37,15 @@ function xOut = doOffset(x,offset, f)
   xOut = x - offsetR;
 endfunction;
 
-function [x, data] = processOne(file, columns, filePath, f1, f2, crop, tEnd, varI, varName)
+function [x, data] = processOne(file, columns, filePath, f1, f2, crop, tEnd, varI, varName, repairColumn)
   #read the data from file:
   ["reading " filePath file]
   data = importdata([filePath file],"\t",3).data(:,columns);
+  if (repairColumn > 0)
+    toRepCol = data(:, repairColumn);
+    repaired = repairFlowData(toRepCol);
+    data(:,repairColumn) = repaired;
+  endif;
   #resample data, return new time grid as well. f1 .. original sample rate, f2 .. new sample rate.
   [x, data] = resampleX(data,f1,f2);
   #------------------ Uncoment to find crop time range (crop_): ----------------------
@@ -141,9 +146,9 @@ function allData(dir)
 
   close all;
 
-  [xT, dataT] = processOne(fileT, columnT, filePath, fT , fTarget, cropT, tEndT, varIT, varNameT);
-  [xW, dataW] = processOne(fileW, columnW, filePath, fW , fTarget, cropW, tEndW, varIW, varNameW);
-  [xWD, dataWD] = processOne(fileWD, columnWD, filePath, fWD, fTarget, cropWD, tEndWD, varIWD, varNameWD);
+  [xT, dataT] = processOne(fileT, columnT, filePath, fT , fTarget, cropT, tEndT, varIT, varNameT, -1);
+  [xW, dataW] = processOne(fileW, columnW, filePath, fW , fTarget, cropW, tEndW, varIW, varNameW, -1);
+  [xWD, dataWD] = processOne(fileWD, columnWD, filePath, fWD, fTarget, cropWD, tEndWD, varIWD, varNameWD, -1);
 
   xdata = mergeData({xT, xW, xWD}, {dataT, dataW, dataWD});
   #xdata = mergeData({xT, xW}, {dataT, dataW});
@@ -151,7 +156,7 @@ function allData(dir)
   varNames = [varNameT, varNameW, varNameWD]
   figure;
   hold on;
-  plotData(xdata, varNames, [3, 4, 5, 6,  8, 9], [1, 1, 1, 0.2, 1, 1], "x");
+  plotData(xdata, varNames, [3, 4, 6,  8, 9], [1, 1, 0.2, 1, 1], "x");
 
   writeData(xdata, ["t" varNames], [filePath dir "_all.txt"])
 endfunction;
@@ -161,8 +166,8 @@ function inputData(dir)
   filePath = ["../Data/" dir "/"]
   run([filePath "/data_info.m"])
   close all;
-  [xW, dataW] = processOne(fileW, columnW, filePath, fW , fTarget, cropWSimul, tEndW, varIW, varNameW);
-  [xWD, dataWD] = processOne(fileWD, columnWD, filePath, fWD, fTarget, cropWDSimul, tEndWD, varIWD, varNameWD);
+  [xW, dataW] = processOne(fileW, columnW, filePath, fW , fTarget, cropWSimul, tEndW, varIW, varNameW, 4);
+  [xWD, dataWD] = processOne(fileWD, columnWD, filePath, fWD, fTarget, cropWDSimul, tEndWD, varIWD, varNameWD, -1);
   xdata = mergeData({xW, xWD}, {dataW, dataWD});
   varNames = [varNameW, varNameWD]
   figure;
@@ -195,8 +200,8 @@ endfunction;
 
 function processData(dir)
   
-#  allData(dir);
-  inputData(dir);
+  allData(dir);
+#  inputData(dir);
 
 endfunction;
 
@@ -204,4 +209,5 @@ endfunction;
 
 
 #processData("c004-8S2000");
-processData("c004-4m2000");
+#processData("c004-4m2000");
+processData("c004-11m2000");

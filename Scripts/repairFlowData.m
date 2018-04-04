@@ -5,7 +5,7 @@ function repairedFlow = repairFlowData(varargin)
 defaults = {[], [-0.1, -0.2, -0.2], [-110, 40], 20, true};
 defaults(1:nargin) = varargin;
 
-flow = defaults{1}; 
+flow = (defaults{1})'; 
 badReading= defaults{2}; 
 diffBounds= defaults{3};
 maxWidth = defaults{4};
