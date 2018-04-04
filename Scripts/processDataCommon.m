@@ -57,19 +57,19 @@ function [x, data] = processOne(file, columns, filePath, f1, f2, crop, tEnd, var
   [x,data] = cropData(x,data,crop);
   
   #----------------- Uncomment to find the time, when cone was disconnected (tEnd_)------
-#  plot(x,data(:,varI));
-#  exit("Find the time, when cone was disconnected")
+  #plot(x,data(:,varI));
+  #error("Find the time, when cone was disconnected")
   #--------------------------------------------------------------------------------------
 
   #offset in time so that the zero time is in the end, when snow cpme was dosconnected
   x = doOffset(x,tEnd, f2);
   
   #------------ Uncomment to see the result ----------------------------
-#    plot(x,data(:,varI));
+ #   plot(x,data(:,varI));
 #    title(file);
 #    xlabel("time [s]");
 #    ylabel(varName(varI));
-#    exit("See one processed dataset");
+ #   error("See one processed dataset");
   #---------------------------------------------------------------------
 endfunction;
 
@@ -145,7 +145,6 @@ function allData(dir)
   #offsets = [offsetT offsetTD offsetW offsetWD];
 
   close all;
-
   [xT, dataT] = processOne(fileT, columnT, filePath, fT , fTarget, cropT, tEndT, varIT, varNameT, -1);
   [xW, dataW] = processOne(fileW, columnW, filePath, fW , fTarget, cropW, tEndW, varIW, varNameW, -1);
   [xWD, dataWD] = processOne(fileWD, columnWD, filePath, fWD, fTarget, cropWD, tEndWD, varIWD, varNameWD, -1);
@@ -156,7 +155,7 @@ function allData(dir)
   varNames = [varNameT, varNameW, varNameWD]
   figure;
   hold on;
-  plotData(xdata, varNames, [3, 4, 6,  8, 9], [1, 1, 0.2, 1, 1], "x");
+  plotData(xdata, varNames, [3, 4,  8, 9], [1, 1, 1, 1], "x");
 
   writeData(xdata, ["t" varNames], [filePath dir "_all.txt"])
 endfunction;
@@ -200,14 +199,14 @@ endfunction;
 
 function processData(dir)
   
-  allData(dir);
-#  inputData(dir);
+#  allData(dir);
+  inputData(dir);
 
 endfunction;
 
 
 
 
-#processData("c004-8S2000");
+processData("c004-8S2000");
 #processData("c004-4m2000");
-processData("c004-11m2000");
+#processData("c004-11m2000");

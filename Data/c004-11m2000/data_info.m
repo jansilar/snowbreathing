@@ -30,25 +30,22 @@ columnWD = [2:3];
 
 #crop times
 cropT = [0 865];
-
-
-TODO: tady pokračovat
 #cropfTD;
-cropW = [177 1040];
-cropWD = [319 1267];#[446 1267];
+cropW = [113 1040];
+cropWD = [50 930];#[446 1267];
 
 #crop times for simulation input data
-cropWSimul = [177 1230];
+cropWSimul = [177 995];
 cropWDSimul = [319 1230];
 
 
 
 #time when the cone was disconnected (after first crop):
 
-commonShift = -332;
+commonShift = -250.2;
 
-tEndT = 894 + commonShift;
+tEndT = 625 + commonShift;
 #tEndTD
-tEndW = 918 + commonShift;
-tEndWD = 801-1.7 + commonShift;
+tEndW = 667.3 -2 + commonShift;
+tEndWD = 596 + commonShift;
 
