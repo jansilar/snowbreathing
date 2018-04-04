@@ -20,9 +20,6 @@ pkg load signal
   flow = data(:, 4).';
   vol = data(:, 5).';
 
-%% filter the positive saturationf rom the flow
-% there are sometimes -0.1 and -0.2 invalid data reads
-
 flow = repairFlowData(flow);
 
 

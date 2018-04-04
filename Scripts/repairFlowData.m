@@ -1,5 +1,6 @@
 function repairedFlow = repairFlowData(varargin)
-% repairFlowData
+% filter the positive saturation from the flow
+% there are sometimes -0.1 and -0.2 invalid data reads
 
 defaults = {[], [-0.1, -0.2, -0.2], [-110, 40], 20, true};
 defaults(1:nargin) = varargin;
@@ -59,5 +60,8 @@ if showPlot
   plot(repairedFlow, 'b', 'LineWidth', 2); 
   plot((1:N)((!sat)), repairedFlow(!sat), 'r*');
 endif
+
+%% filter out some NA and NaNs
+repairedFlow(!isfinite(repairedFlow)) = 0;
 
 endfunction
