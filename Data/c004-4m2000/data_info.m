@@ -20,6 +20,7 @@ fT = 1;
 fTD = 1;
 fW = 25;
 fWD = 100;
+fTarget = 100;
 
 #column indexes with variables of interest:
 columnT = [1 30];
@@ -32,6 +33,12 @@ cropT = [0 1130];
 #cropfTD;
 cropW = [177 1040];
 cropWD = [319 1267];#[446 1267];
+
+#crop times for simulation input data
+cropWSimul = [177 1230];
+cropWDSimul = [319 1230];
+
+
 
 #time when the cone was disconnected (after first crop):
 
