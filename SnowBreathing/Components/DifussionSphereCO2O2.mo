@@ -10,6 +10,6 @@ initial equation
 equation
   O2 = if exhale then inStream(fluxConcB.O2) else extrapolateField(O2) indomain omega.left "left BC duringexhalation, extrapolation during inhalation";
   fluxConcB.O2 = O2 indomain omega.left;
-  der(O2) + (q / (4 * pi * omega.x ^ 2) - 2 * D / omega.x) * pder(O2, x) - D * pder(O2, x, x) = 0 indomain omega "the advection-diffusion equation";
+  der(O2) + (q / (facA * omega.x ^ 2) - 2 * D / omega.x) * pder(O2, x) - D * pder(O2, x, x) = 0 indomain omega "the advection-diffusion equation";
   O2 = if exhale then extrapolateField(O2) else O2_out indomain omega.right "right/outer BC or extrapolation";
 end DifussionSphereCO2O2;

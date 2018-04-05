@@ -5,7 +5,7 @@ function repairedFlow = repairFlowData(varargin)
 defaults = {[], [], [-0.1, -0.2, -0.2], [-110, 40, 20], true};
 defaults(1:nargin) = varargin;
 
-flow = defaults{1}; 
+flow = (defaults{1})'; 
 invalidFlowData = defaults{2};
 badReading= defaults{3}; 
 % [min, max, maxwidth] - min peak of diff, max peak of diff and maximal width of sat

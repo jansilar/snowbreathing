@@ -37,10 +37,15 @@ function xOut = doOffset(x,offset, f)
   xOut = x - offsetR;
 endfunction;
 
-function [x, data] = processOne(file, columns, filePath, f1, f2, crop, tEnd, varI, varName)
+function [x, data] = processOne(file, columns, filePath, f1, f2, crop, tEnd, varI, varName, repairColumn)
   #read the data from file:
   ["reading " filePath file]
   data = importdata([filePath file],"\t",3).data(:,columns);
+  if (repairColumn > 0)
+    toRepCol = data(:, repairColumn);
+    repaired = repairFlowData(toRepCol);
+    data(:,repairColumn) = repaired;
+  endif;
   #resample data, return new time grid as well. f1 .. original sample rate, f2 .. new sample rate.
   [x, data] = resampleX(data,f1,f2);
   #------------------ Uncoment to find crop time range (crop_): ----------------------
@@ -52,19 +57,19 @@ function [x, data] = processOne(file, columns, filePath, f1, f2, crop, tEnd, var
   [x,data] = cropData(x,data,crop);
   
   #----------------- Uncomment to find the time, when cone was disconnected (tEnd_)------
-#  plot(x,data(:,varI));
-#  exit("Find the time, when cone was disconnected")
+  #plot(x,data(:,varI));
+  #error("Find the time, when cone was disconnected")
   #--------------------------------------------------------------------------------------
 
   #offset in time so that the zero time is in the end, when snow cpme was dosconnected
   x = doOffset(x,tEnd, f2);
   
   #------------ Uncomment to see the result ----------------------------
-#    plot(x,data(:,varI));
+ #   plot(x,data(:,varI));
 #    title(file);
 #    xlabel("time [s]");
 #    ylabel(varName(varI));
-#    exit("See one processed dataset");
+ #   error("See one processed dataset");
   #---------------------------------------------------------------------
 endfunction;
 
@@ -128,7 +133,8 @@ function newData = avgDownsample(data,n)
 end;
     
 
-function processData(dir)
+
+function allData(dir)
   #read the dataInfo file:
   filePath = ["../Data/" dir "/"]
   run([filePath "/data_info.m"])
@@ -138,14 +144,10 @@ function processData(dir)
   f = [fT fTD fW fWD];
   #offsets = [offsetT offsetTD offsetW offsetWD];
 
-
-
   close all;
-
-  fTarget = 100;
-  [xT, dataT] = processOne(fileT, columnT, filePath, fT , fTarget, cropT, tEndT, varIT, varNameT);
-  [xW, dataW] = processOne(fileW, columnW, filePath, fW , fTarget, cropW, tEndW, varIW, varNameW);
-  [xWD, dataWD] = processOne(fileWD, columnWD, filePath, fWD, fTarget, cropWD, tEndWD, varIWD, varNameWD);
+  [xT, dataT] = processOne(fileT, columnT, filePath, fT , fTarget, cropT, tEndT, varIT, varNameT, -1);
+  [xW, dataW] = processOne(fileW, columnW, filePath, fW , fTarget, cropW, tEndW, varIW, varNameW, -1);
+  [xWD, dataWD] = processOne(fileWD, columnWD, filePath, fWD, fTarget, cropWD, tEndWD, varIWD, varNameWD, -1);
 
   xdata = mergeData({xT, xW, xWD}, {dataT, dataW, dataWD});
   #xdata = mergeData({xT, xW}, {dataT, dataW});
@@ -153,27 +155,58 @@ function processData(dir)
   varNames = [varNameT, varNameW, varNameWD]
   figure;
   hold on;
-  plotData(xdata, varNames, [3, 4, 5, 6,  8, 9], [1, 1, 1, 0.2, 1, 1], "x");
+  plotData(xdata, varNames, [3, 4,  8, 9], [1, 1, 1, 1], "x");
 
   writeData(xdata, ["t" varNames], [filePath dir "_all.txt"])
-  CO2O2_100 = xdata(:,[1,9,10]);
+endfunction;
+
+function inputData(dir)
+  #read the dataInfo file:
+  filePath = ["../Data/" dir "/"]
+  run([filePath "/data_info.m"])
+  close all;
+  [xW, dataW] = processOne(fileW, columnW, filePath, fW , fTarget, cropWSimul, tEndW, varIW, varNameW, 4);
+  [xWD, dataWD] = processOne(fileWD, columnWD, filePath, fWD, fTarget, cropWDSimul, tEndWD, varIWD, varNameWD, -1);
+  xdata = mergeData({xW, xWD}, {dataW, dataWD});
+  varNames = [varNameW, varNameWD]
+  figure;
+  hold on;
+  plotData(xdata, varNames, [1, 2, 4, 6, 7], [1, 1, 1/6, 1, 1], "x");
+  CO2O2_100 = xdata(:,[1,7,8]);
   CO2O2 = avgDownsample(CO2O2_100, 20);
   save("-v4",[filePath "CO2O2.mat"], "CO2O2")  
-  Flow_100 = xdata(:,[1,7]);
+  Flow_100 = xdata(:,[1,5]);
   Flow = avgDownsample(Flow_100,20);
+  #set zero flow after disconnecting the mouthpiece
+  Flow(Flow(:,1) > -commonShift,2) = 0;
+  #save to file
   save("-v4",[filePath "Flow.mat"], "Flow")  
 
-  figure;
-  plot(Flow_100(:,1),Flow_100(:,2));
+#  figure;
+#  plot(Flow_100(:,1),Flow_100(:,2));
   figure;
   plot(Flow(:,1),Flow(:,2));
+  figure;
+  plot(CO2O2(:,1),CO2O2(:,2));
+  hold on;
+  #plot(CO2O2(:,1),CO2O2(:,3));
   
   #hold on;
   #plot(xdata(:,1),xdata(:,6))
-endfunction;  
+
+endfunction;
+
+
+function processData(dir)
+  
+#  allData(dir);
+  inputData(dir);
+
+endfunction;
 
 
 
 
-#processData("c004-8S2000");
-processData("c004-4m2000");
+processData("c004-8S2000");
+#processData("c004-4m2000");
+#processData("c004-11m2000");
