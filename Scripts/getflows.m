@@ -1,3 +1,4 @@
+ 
 %% Head
 % pkg load signal
 
@@ -20,6 +21,7 @@ data_dir = 'c004-11m2000';
   data = data_raw_read;
 
   N = length(data);
+  X = 1:N;
   co2 = data(:, 1).';
   o2 = data(:, 2).';
   press = data(:, 3).';  
@@ -28,7 +30,7 @@ data_dir = 'c004-11m2000';
 
   
  % dataset c004-11m2000
-%flow2 = repairFlowData(flow, [8030:8040,16387:16394, 16539:16552], [-0.1, -0.2, -0.2], [-110, 40, 20], true);
+flow2 = repairFlowData(flow, [8030:8040,16387:16394, 16539:16552], [-0.1, -0.2, -0.2], [-110, 40, 20], true);
 
  % dataset c004-8S2000
 %flow2 = repairFlowData(flow, [19545:19547], [-0.1, -0.2, -0.2], [-90, 40, 40], true);
@@ -37,33 +39,49 @@ data_dir = 'c004-11m2000';
 % flow2 = repairFlowData(flow, [7020:7076, 8700:8753, 13701:13754, 21542:21558, 22112:22121], [-0.1, -0.2, -0.2], [-90, 40, 30], true);
 
  % dataset c004-3m0200
- flow2 = repairFlowData(flow, [16873:16876, 12920:12929, 10827:10874, 7868:7917, 1696:1704],[0, -0.2, -0.2], [-60, 40, 30], true);
+%  flow2 = repairFlowData(flow, [16873:16876, 12920:12929, 10827:10874, 7868:7917, 1696:1704],[0, -0.2, -0.2], [-60, 40, 30], true);
 
  
  %% Test the volume  - cummulative sum of the flow
- volf = cumsum(flow2);
+ chunks = 7051:10300;
  
-X = 1:N;
+ inv = [8030:8040,16387:16394, 16539:16552];
+ volf = cumsum(flow2(chunks));
 
-pp = splinefit(X, volf, 1);
-tt = ppval(pp, X);
+ 
 
-figure(3); clf; hold on;
-plot(flow2*50, 'r');
-plot(volf, 'b');
-plot(tt, 'k', 'LineWidth', 2);
-
-[X] = detrend(volf, 4);
-plot(X);
+[p, s, mu] = polyfit(X(chunks), volf, 4);
+tt = polyval(p,X(chunks),[],mu);
 
 
-plot(flow2r, 'b');
-plot(flow2, 'r');
+flowr = [0, diff(volf-tt)]; 
 
-% filter out volume changes by interpolation over some value?
-satu = flow2 < 120 & flow2 > -114;
-X = (1:N);
-flow2r = interp1(X(satu), flow2(satu), 1:N, 'spline');
+% pp = splinefit(X, volf, 1);
+% tt = ppval(pp, X);
+
+figure(1); clf; hold on;
+plot(X(chunks), (flow2(chunks))*50, 'b');
+plot(X(chunks),volf, 'r');
+plot(X(chunks),(flowr)*50, 'm');
+plot(X(chunks),tt, 'k', 'LineWidth', 2);
+
+% //plot(X(inv), tt, '*g');
+
+plot(X(chunks), cumsum(flowr), 'g');
+
+
+%%
+% [X] = detrend(volf, 4);
+% plot(X);
+% 
+% 
+% plot(flow2r, 'b');
+% plot(flow2, 'r');
+% 
+% % filter out volume changes by interpolation over some value?
+% satu = flow2 < 120 & flow2 > -114;
+% X = (1:N);
+% flow2r = interp1(X(satu), flow2(satu), 1:N, 'spline');
 
 
 %% filter out peaks and its neighbours
@@ -113,7 +131,7 @@ sl_av = ones(1, filt_L)/filt_L;
 co2avg = shift(filter(sl_av, 1, co2), -ceil(filt_L/2 - 1));  
 o2avg = shift(filter(sl_av, 1, o2), -ceil(filt_L/2 - 1));  
 pressavg = shift(filter(sl_av, 1, press), -ceil(filt_L/2 - 1));  
-flowavg = shift(filter(sl_av, 1, flow), -ceil(filt_L/2 - 1));
+flowavg = shift(filter(sl_av, 1, flow2), -ceil(filt_L/2 - 1));
 volavg = shift(filter(sl_av, 1, vol), -ceil(filt_L/2 - 1));
 
 %figure(1);clf;hold on; plot(co2, 'r');plot(co2avg, 'g')  ;
@@ -215,7 +233,6 @@ resavg = shift(filter(sl_av, 1, res), -ceil(filt_L/2 - 1));
 rng = {7400:7800, 9700:10200, 10500:10800,14350:14600};
 
 
-
 f1 = 4;
 f2 = 5;
 figure(f1);clf;hold on; plot(co2avg, 'k');
@@ -225,9 +242,10 @@ previewStyle = {'b', 'm', 'r', 'g'};
 
 for i = 1:length(rng)
   secs = [false(1, rng{i}(1)-1) validity(rng{i}) false(1, N-rng{i}(end))];
-  plot(pressavg(secs), flowavg(secs), graphStyle{i});
+  plot(pressavg, flowavg, graphStyle{i});
+%  plot(pressavg(secs), flowavg(secs), graphStyle{i});
   figure(f1); plot(X(secs), co2avg(secs), previewStyle{i}); figure(f2);
-endfor
+end
 
 %{
 clf; plot(secs);
