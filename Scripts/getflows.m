@@ -1,17 +1,19 @@
 %% Head
-pkg load signal
+% pkg load signal
 
-data_dir = 'c004-3m0200';
+% data_dir = 'c004-3m0200';
 %  data_dir = 'c004-4m2000';
 %  data_dir = 'c004-8S2000';
-%  data_dir = 'c004-11m2000';
-  file = ["..\\Data\\" data_dir "\\" data_dir 'wavesDots.asc'];
+data_dir = 'c004-11m2000';
+  file = ['../Data/' data_dir '/' data_dir 'wavesDots.asc'];
 %  rowsW = [1, 2, 3, 4, 5];
   rowsW = [1, 2, 3, 4];
   fs = 25;
 
 %% load data - pCO2, pO2, Flow
-  data_raw_read = importdata(file,"\t",3).data(:,rowsW);
+
+  data_raw_read_d = importdata(file,'\t',3);
+  data_raw_read = data_raw_read_d.data(:,rowsW);
   
   % crop to 8k to 24k5
 % data = data_raw_read(8000:24500, :);
@@ -22,7 +24,7 @@ data_dir = 'c004-3m0200';
   o2 = data(:, 2).';
   press = data(:, 3).';  
   flow = data(:, 4).';
-  vol = data(:, 5).';
+%   vol = data(:, 5).';
 
   
  % dataset c004-11m2000
@@ -49,7 +51,7 @@ tt = ppval(pp, X);
 figure(3); clf; hold on;
 plot(flow2*50, 'r');
 plot(volf, 'b');
-plot(tt, 'k', "LineWidth", 2);
+plot(tt, 'k', 'LineWidth', 2);
 
 [X] = detrend(volf, 4);
 plot(X);
@@ -60,7 +62,8 @@ plot(flow2, 'r');
 
 % filter out volume changes by interpolation over some value?
 satu = flow2 < 120 & flow2 > -114;
-flow2r = interp1((1:N)(satu), flow2(satu), 1:N, 'spline');
+X = (1:N);
+flow2r = interp1(X(satu), flow2(satu), 1:N, 'spline');
 
 
 %% filter out peaks and its neighbours
@@ -121,7 +124,7 @@ co2d = co2avg(1:N-1) - co2avg(2:N);
 co2davg = shift(filter(sl_av, 1, co2d), -ceil(filt_L/2 - 1));
 % crop the negatives and find peaks
 co2davgpos = zeros(1, N); co2davgpos(co2davg > 0) = co2davg(co2davg >0);
-[x, ploc] = findpeaks(co2davgpos, "MinPeakDistance",60, "MinPeakHeight", 0.01);
+[x, ploc] = findpeaks(co2davgpos, 'MinPeakDistance',60, 'MinPeakHeight', 0.01);
 
 % plot the breath positions
 % plot(ploc, x, 'gx');plot(co2davgpos);
@@ -223,7 +226,7 @@ previewStyle = {'b', 'm', 'r', 'g'};
 for i = 1:length(rng)
   secs = [false(1, rng{i}(1)-1) validity(rng{i}) false(1, N-rng{i}(end))];
   plot(pressavg(secs), flowavg(secs), graphStyle{i});
-  figure(f1); plot((1:N)(secs), co2avg(secs), previewStyle{i}); figure(f2);
+  figure(f1); plot(X(secs), co2avg(secs), previewStyle{i}); figure(f2);
 endfor
 
 %{
