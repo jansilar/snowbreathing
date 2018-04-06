@@ -30,13 +30,46 @@ data_dir = 'c004-11m2000';
 
   
  % dataset c004-11m2000
- mi = [6650, 8030:8040,10265:10292, 12500, 14500, 16300:16327, 16387:16394, 16539:16552, 16704];
+mi = [6650, 8030:8040,10265:10292, 12500, 14500, 16300:16327, 16387:16394, 16539:16552, 16704];
 flow2 = repairFlowData(flow, mi, [-0.1, -0.2, -0.2], [-110, 40, 20], true);
 
 sectors = false([1, N]);
 sectors(mi) = true;
 sectors2 = circshift(sectors, [0,-1]) & ~sectors;
 figure;hold on;plot(sectors, '-');plot(circshift(sectors, [0 -1]), '-');plot(sectors2);
+
+mis = sort(mi);
+%breaks = [false, diff(mis) > 1];
+breaks = [false, diff(diff(mis)) ~= 0, false];
+breakPos = [0 mis(breaks)];
+ 
+% plot the manual invalidated areas as a breaks for trends
+%{
+figure;clf;hold on;
+plot(mis);plot(misi);
+plot((1:length(mis))(breaks), mis(breaks), 'm*');
+%}
+
+i = 4;
+chunk = breakPos(i):breakPos(i+1);
+N_chunk = length(chunk);
+vol{i} = cumsum(flow2(chunk));
+X = 1:N_chunk;
+
+[p, s, mu] = polyfit(X, vol{i}, 4);
+tt{i} = polyval(p,X,[],mu);
+flowr{i} = [0, diff(vol{i}-tt)]; 
+
+figure(1); clf; hold on;
+plot(X, (flow2(chunk))*50, 'b');
+plot(X,vol{i}, 'r');
+plot(X,(flowr{i})*50, 'm');
+plot(X,tt{i}, 'k', 'LineWidth', 2);
+
+% //plot(X(inv), tt, '*g');
+
+plot(X, cumsum(flowr{i}), 'g');
+
  % dataset c004-8S2000
 %flow2 = repairFlowData(flow, [19545:19547], [-0.1, -0.2, -0.2], [-90, 40, 40], true);
 
