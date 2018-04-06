@@ -38,10 +38,11 @@ sectors(mi) = true;
 sectors2 = circshift(sectors, [0,-1]) & ~sectors;
 figure;hold on;plot(sectors, '-');plot(circshift(sectors, [0 -1]), '-');plot(sectors2);
 
-mis = sort(mi);
+% also include start and the end of the signal
+mis = [1, sort(mi), N];
 %breaks = [false, diff(mis) > 1];
-breaks = [false, diff(diff(mis)) ~= 0, false];
-breakPos = [0 mis(breaks)];
+breaks = [true, diff(diff(mis)) ~= 0, true];
+breakPos = mis(breaks);
  
 % plot the manual invalidated areas as a breaks for trends
 %{
@@ -50,22 +51,38 @@ plot(mis);plot(misi);
 plot((1:length(mis))(breaks), mis(breaks), 'm*');
 %}
 
-i = 4;
-chunk = breakPos(i):breakPos(i+1);
-N_chunk = length(chunk);
-vol{i} = cumsum(flow2(chunk));
-X = 1:N_chunk;
+for i = 1:length(breakPos)-1
+  chunk = breakPos(i):breakPos(i+1);
 
-[p, s, mu] = polyfit(X, vol{i}, 4);
-tt{i} = polyval(p,X,[],mu);
-flowr{i} = [0, diff(vol{i}-tt)]; 
+  vol(chunk) = cumsum(flow2(chunk));
+  chunkX = 1:length(chunk);
+  [p, s, mu] = polyfit(chunkX, vol(chunk), 4);
+  tt(chunk) = polyval(p,chunkX,[],mu);
+  flowr(chunk) = [0, diff(vol(chunk)-tt(chunk))]; 
+end
 
-figure(1); clf; hold on;
-plot(X, (flow2(chunk))*50, 'b');
-plot(X,vol{i}, 'r');
-plot(X,(flowr{i})*50, 'm');
-plot(X,tt{i}, 'k', 'LineWidth', 2);
 
+%figure(3); clf; hold on;
+plot(X, (flow2)*50, 'b');
+plot(X,vol, 'r');
+plot(X,(flowr)*50, 'm');
+plot(X,tt, 'k', 'LineWidth', 2);
+
+
+voln = vol - tt;
+misv = true(1, N);
+misv(mis) = false;
+plot(X(~misv), voln(~misv), 'r*');
+volr = interp1(X(misv), voln(misv), 1:N, 'pchip');
+flowr = [0, diff(volr)];
+plot(voln, 'g');
+plot(volr, 'k');
+plot(X,(flowr)*50, 'm', 'LineWidth', 2);
+
+
+ttt = shift(filter(sl_av, 1, tt), -ceil(filt_L/2 - 1));  
+ttt = interp1(X, tt, X, 'spline');
+plot(ttt, 'c');
 % //plot(X(inv), tt, '*g');
 
 plot(X, cumsum(flowr{i}), 'g');
