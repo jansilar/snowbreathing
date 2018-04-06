@@ -46,11 +46,20 @@ end;
 
 
 % exclude additional points manually
+% it is better to do it after the automatic peak detection, 
+% so we wont introduce additional high differences
 sat (invalidFlowData) = false;
 
 
 repairedFlow = interp1(X(sat), flow(sat), 1:N, 'pchip');
+% override possible corruption of original data by interpolation smoothing
 repairedFlow(sat) = flow(sat);
+
+% filter out some NA and NaNs
+repairedFlow(~isfinite(repairedFlow)) = 0;
+
+% get the volume shift
+vol = cumsum(repairedFlow)/100;
 
 %{
 figure(1)
@@ -62,6 +71,7 @@ plot((1:N)(sat_loc),flowvdif2(sat_loc), '*');
 %flowv2(sat) = flow(sat);
 
 %% df
+ms = 15;
 if (showPlot)
   clf;hold on; 
   plot(flow, '-r') ;
@@ -69,9 +79,18 @@ if (showPlot)
   plot(repairedFlow, 'b', 'LineWidth', 2); 
   plot(flowvdif, '-g');
 
-  plot(X(~sat), repairedFlow(~sat), 'r*');
+  % invalid readings - +
+  plot(X(~flowvalid), repairedFlow(~flowvalid), 'r+', 'markersize', ms);
+  
+  % saturation only - X
+  plot(X(~sat & flowvalid), repairedFlow(~sat & flowvalid), 'rx', 'markersize', ms);
+  
+  % manual exclusion - point - would overlap with sat
+  plot(X(invalidFlowData), repairedFlow(invalidFlowData), 'r.', 'markersize', ms);
+  
+  plot(X, vol, 'k');
+  plot(X(invalidFlowData), vol(invalidFlowData), 'r.', 'markersize', ms);
+  
 end;
 
-%% filter out some NA and NaNs
-repairedFlow(~isfinite(repairedFlow)) = 0;
 

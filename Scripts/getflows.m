@@ -30,8 +30,13 @@ data_dir = 'c004-11m2000';
 
   
  % dataset c004-11m2000
-flow2 = repairFlowData(flow, [8030:8040,16387:16394, 16539:16552], [-0.1, -0.2, -0.2], [-110, 40, 20], true);
+ mi = [6650, 8030:8040,10265:10292, 12500, 14500, 16300:16327, 16387:16394, 16539:16552, 16704];
+flow2 = repairFlowData(flow, mi, [-0.1, -0.2, -0.2], [-110, 40, 20], true);
 
+sectors = false([1, N]);
+sectors(mi) = true;
+sectors2 = circshift(sectors, [0,-1]) & ~sectors;
+figure;hold on;plot(sectors, '-');plot(circshift(sectors, [0 -1]), '-');plot(sectors2);
  % dataset c004-8S2000
 %flow2 = repairFlowData(flow, [19545:19547], [-0.1, -0.2, -0.2], [-90, 40, 40], true);
 
