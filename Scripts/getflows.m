@@ -51,10 +51,10 @@ plot(mis);plot(misi);
 plot((1:length(mis))(breaks), mis(breaks), 'm*');
 %}
 
+vol = cumsum(flow2);
 for i = 1:length(breakPos)-1
   chunk = breakPos(i):breakPos(i+1);
-
-  vol(chunk) = cumsum(flow2(chunk));
+  
   chunkX = 1:length(chunk);
   [p, s, mu] = polyfit(chunkX, vol(chunk), 4);
   tt(chunk) = polyval(p,chunkX,[],mu);
@@ -71,13 +71,15 @@ plot(X,tt, 'k', 'LineWidth', 2);
 
 voln = vol - tt;
 misv = true(1, N);
-misv(mis) = false;
+%misv(mis) = NAN;
 plot(X(~misv), voln(~misv), 'r*');
-volr = interp1(X(misv), voln(misv), 1:N, 'pchip');
-flowr = [0, diff(volr)];
+%volr = interp1(X(misv), voln(misv), 1:N, 'pchip');
+volr(mis) = nan;
+flowr_nans = [0, diff(volr)];
+flowr = interp1(X(~isnan(flowr_nans)), flowr_nans(~isnan(flowr_nans)), X, 'pchip');
 plot(voln, 'g');
 plot(volr, 'k');
-plot(X,(flowr)*50, 'm', 'LineWidth', 2);
+plot(X,(flowr)*50, 'r', 'LineWidth', 2);
 
 
 ttt = shift(filter(sl_av, 1, tt), -ceil(filt_L/2 - 1));  
