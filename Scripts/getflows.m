@@ -1,11 +1,38 @@
- 
 %% Head
-% pkg load signal
 
-% data_dir = 'c004-3m0200';
-%  data_dir = 'c004-4m2000';
-%  data_dir = 'c004-8S2000';
-data_dir = 'c004-11m2000';
+%% dataset c004-3m0200
+%data_dir = 'c004-3m0200';
+%flowRepair.invalidReading = [0, -0.2, -0.2];
+%flowRepair.manuallyInvalidated = ...
+%  [600, 6873:16876, 12920:12929, 10827:10874, 7868:7917, 1696:1704, 17600];
+%flowRepair.diffBounds = [-60, 40, 30];
+
+%% dataset c004-4m2000
+%data_dir = 'c004-4m2000';
+%flowRepair.invalidReading = [-0.1, -0.2];
+%flowRepair.manuallyInvalidated = ...
+%    [4000, 7020:7076, 8700:8753, 13701:13754, 21340, 21542:21558, ...
+%    22112:22121, 23064, 26000];
+%flowRepair.diffBounds = [-90, 40, 30];
+
+% dataset c004-8S2000
+data_dir = 'c004-8S2000';
+flowRepair.invalidReading = [-0.1, -0.2, -0.2];
+flowRepair.manuallyInvalidated = ...
+  [19545:19547];
+flowRepair.diffBounds = [-90, 40, 40];
+
+%% dataset c004-11m2000
+%data_dir = 'c004-11m2000';
+%flowRepair.invalidReading = [-0.1, -0.2, -0.2];
+%flowRepair.manuallyInvalidated = ...
+%  [1, 5000, 6650, 8030:8040,10265:10292, 12500, 14500, 16300:16327, ...
+%  16387:16394, 16539:16552, 16704, 16727, 21633, 25000];
+%flowRepair.diffBounds = [-110, 40, 20];
+
+%% 
+pkg load signal
+
   file = ['../Data/' data_dir '/' data_dir 'wavesDots.asc'];
 %  rowsW = [1, 2, 3, 4, 5];
   rowsW = [1, 2, 3, 4];
@@ -16,8 +43,6 @@ data_dir = 'c004-11m2000';
   data_raw_read_d = importdata(file,'\t',3);
   data_raw_read = data_raw_read_d.data(:,rowsW);
   
-  % crop to 8k to 24k5
-% data = data_raw_read(8000:24500, :);
   data = data_raw_read;
 
   N = length(data);
@@ -28,64 +53,13 @@ data_dir = 'c004-11m2000';
   flow = data(:, 4).';
 %   vol = data(:, 5).';
 
-  
- % dataset c004-11m2000
-mi = [5000, 6650, 8030:8040,10265:10292, 12500, 14500, 16300:16327, 16387:16394, 16539:16552, 16704];
-flow2 = repairFlowData(flow, mi, [-0.1, -0.2, -0.2], [-110, 40, 20], false);
+% first iteration - remove invalid readings and saturation 
+flow2 = repairFlowData(flow, flowRepair, true);
 
-% also include start and the end of the signal
-mis = [1, sort(mi), N];
-% manually insert start and end positions
-breaks = [true, diff(diff(mis)) ~= 0, true];
-
-% exclude the points too close to each other
-breakPos = adjustMinimalDistances(mis(breaks), 250, false);
-
-vol = cumsum(flow2);
-% piecewise remove nonlinear trends
-for i = 1:length(breakPos)-1
-  chunk = breakPos(i):breakPos(i+1);
-  
-  chunkX = 1:length(chunk);
-  [p, s, mu] = polyfit(chunkX, vol(chunk), 3);
-  tt(chunk) = polyval(p,chunkX,[],mu);
-end
-
-
-%% the interpolation cannot reproduce extrapolate the last val
-%volr(breakPos(1:end-1)) = nan;
-%flowr = [0, diff(volr)];
-%flowr = interp1(X(~isnan(flowr_nans)), flowr_nans(~isnan(flowr_nans)), X, 'pchip');
-
-tt2 = tt;
-% invalidate all the manualy invalid intervals, except first and last
-tt2(mis(2:end-1)) = nan;
-% and its right neighbours - there is probably data error
-% the value rougly imitates breath length
-ngb = 40;
-for i = breakPos(2:end-1)
-  tt2(i: i+ngb) = nan;
-end
-% interpolate the nans by spline
-tt3 = interp1(X(~isnan(tt2)), tt2(~isnan(tt2)), X, 'spline');
-
-% use the smooth curve to repair the vol
-volr = vol - tt3;
-% and reconstruct the flow
-flowr = [0, diff(volr)];
-
-% reconstructed volume - just for check
-rvol = cumsum([0 diff(volr)]);
-
-clf; hold on;
-plot(X, vol)
-plot(X, tt, 'k')
-plot(X, tt3, 'k', 'Linewidth', 2)
-
-plot(X, flow2*50, 'b')
-plot(X, flowr*50, 'r')
-
-plot(X, rvol, 'm')
+% exclude too small segments to prevent overfitting
+breakPos = adjustMinimalDistances(flowRepair.manuallyInvalidated, 250, false);
+% adjust the volume
+flowr = adjustVolumeTrend(flow2, breakPos, true);
 
 %vol2 = cumsum(flowr);
 %% 2nd iteration: remove discontinuties
