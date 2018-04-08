@@ -30,64 +30,106 @@ data_dir = 'c004-11m2000';
 
   
  % dataset c004-11m2000
-mi = [6650, 8030:8040,10265:10292, 12500, 14500, 16300:16327, 16387:16394, 16539:16552, 16704];
-flow2 = repairFlowData(flow, mi, [-0.1, -0.2, -0.2], [-110, 40, 20], true);
-
-sectors = false([1, N]);
-sectors(mi) = true;
-sectors2 = circshift(sectors, [0,-1]) & ~sectors;
-figure;hold on;plot(sectors, '-');plot(circshift(sectors, [0 -1]), '-');plot(sectors2);
+mi = [5000, 6650, 8030:8040,10265:10292, 12500, 14500, 16300:16327, 16387:16394, 16539:16552, 16704];
+flow2 = repairFlowData(flow, mi, [-0.1, -0.2, -0.2], [-110, 40, 20], false);
 
 % also include start and the end of the signal
 mis = [1, sort(mi), N];
-%breaks = [false, diff(mis) > 1];
+% manually insert start and end positions
 breaks = [true, diff(diff(mis)) ~= 0, true];
-breakPos = mis(breaks);
- 
-% plot the manual invalidated areas as a breaks for trends
-%{
-figure;clf;hold on;
-plot(mis);plot(misi);
-plot((1:length(mis))(breaks), mis(breaks), 'm*');
-%}
+
+% exclude the points too close to each other
+breakPos = adjustMinimalDistances(mis(breaks), 250, false);
 
 vol = cumsum(flow2);
+% piecewise remove nonlinear trends
 for i = 1:length(breakPos)-1
   chunk = breakPos(i):breakPos(i+1);
   
   chunkX = 1:length(chunk);
-  [p, s, mu] = polyfit(chunkX, vol(chunk), 4);
+  [p, s, mu] = polyfit(chunkX, vol(chunk), 3);
   tt(chunk) = polyval(p,chunkX,[],mu);
-  flowr(chunk) = [0, diff(vol(chunk)-tt(chunk))]; 
 end
 
 
-%figure(3); clf; hold on;
-plot(X, (flow2)*50, 'b');
-plot(X,vol, 'r');
-plot(X,(flowr)*50, 'm');
-plot(X,tt, 'k', 'LineWidth', 2);
+%% the interpolation cannot reproduce extrapolate the last val
+%volr(breakPos(1:end-1)) = nan;
+%flowr = [0, diff(volr)];
+%flowr = interp1(X(~isnan(flowr_nans)), flowr_nans(~isnan(flowr_nans)), X, 'pchip');
+
+tt2 = tt;
+% invalidate all the manualy invalid intervals, except first and last
+tt2(mis(2:end-1)) = nan;
+% and its right neighbours - there is probably data error
+% the value rougly imitates breath length
+ngb = 40;
+for i = breakPos(2:end-1)
+  tt2(i: i+ngb) = nan;
+end
+% interpolate the nans by spline
+tt3 = interp1(X(~isnan(tt2)), tt2(~isnan(tt2)), X, 'spline');
+
+% use the smooth curve to repair the vol
+volr = vol - tt3;
+% and reconstruct the flow
+flowr = [0, diff(volr)];
+
+% reconstructed volume - just for check
+rvol = cumsum([0 diff(volr)]);
+
+clf; hold on;
+plot(X, vol)
+plot(X, tt, 'k')
+plot(X, tt3, 'k', 'Linewidth', 2)
+
+plot(X, flow2*50, 'b')
+plot(X, flowr*50, 'r')
+
+plot(X, rvol, 'm')
+
+%vol2 = cumsum(flowr);
+%% 2nd iteration: remove discontinuties
+%for i = 1:length(breakPos)-1
+%  chunk = breakPos(i):breakPos(i+1);
+%  
+%  chunkX = 1:length(chunk);
+%  [p, s, mu] = polyfit(chunkX, vol2(chunk), 6);
+%  ttt(chunk) = polyval(p,chunkX,[],mu);
+%end
+%
+%volr2 = vol2 - ttt;
+%% volr2(breakPos) = nan;
+%flowr2_nans = [0, diff(volr2)];
+%flowr2 = interp1(X(~isnan(flowr2_nans)), flowr2_nans(~isnan(flowr2_nans)), X, 'pchip');
 
 
-voln = vol - tt;
-misv = true(1, N);
-%misv(mis) = NAN;
-plot(X(~misv), voln(~misv), 'r*');
-%volr = interp1(X(misv), voln(misv), 1:N, 'pchip');
-volr(mis) = nan;
-flowr_nans = [0, diff(volr)];
-flowr = interp1(X(~isnan(flowr_nans)), flowr_nans(~isnan(flowr_nans)), X, 'pchip');
-plot(voln, 'g');
-plot(volr, 'k');
-plot(X,(flowr)*50, 'r', 'LineWidth', 2);
-
-
-ttt = shift(filter(sl_av, 1, tt), -ceil(filt_L/2 - 1));  
-ttt = interp1(X, tt, X, 'spline');
-plot(ttt, 'c');
-% //plot(X(inv), tt, '*g');
-
-plot(X, cumsum(flowr{i}), 'g');
+%
+%%figure(3); 
+%clf; hold on;
+%%plot(X, (flow2)*50, 'b');
+%plot(X,vol, 'r');
+%plot(X,tt, 'k', 'LineWidth', 2);
+%plot(X,vol2, 'r');
+%plot(X,tt, 'k', 'LineWidth', 2);
+%plot(X,tt2, 'k', 'LineWidth', 1);
+%plot(X,volr2, 'b');
+%plot(X, cumsum(flowr2), 'c')
+%plot(X, flowr2*50, 'm')
+%
+%plot(X, cumsum(flowr2), 'b');
+%plot(X(breakPos), tt(breakPos), 'kx', 'MarkerSize', 14);
+%
+%plot(volr, 'k');
+%%plot(X,(flowr)*50, 'r', 'LineWidth', 2);
+%plot(X(6650:end), cumsum(flowr(6650:end)), 'm')
+%
+%
+%ttt = shift(filter(sl_av, 1, tt), -ceil(filt_L/2 - 1));  
+%ttt = interp1(X, tt, X, 'spline');
+%plot(ttt, 'c');
+%% //plot(X(inv), tt, '*g');
+%
+%plot(X, cumsum(flowr{i}), 'g');
 
  % dataset c004-8S2000
 %flow2 = repairFlowData(flow, [19545:19547], [-0.1, -0.2, -0.2], [-90, 40, 40], true);
@@ -100,32 +142,32 @@ plot(X, cumsum(flowr{i}), 'g');
 
  
  %% Test the volume  - cummulative sum of the flow
- chunks = 7051:10300;
- 
- inv = [8030:8040,16387:16394, 16539:16552];
- volf = cumsum(flow2(chunks));
-
- 
-
-[p, s, mu] = polyfit(X(chunks), volf, 4);
-tt = polyval(p,X(chunks),[],mu);
-
-
-flowr = [0, diff(volf-tt)]; 
-
-% pp = splinefit(X, volf, 1);
-% tt = ppval(pp, X);
-
-figure(1); clf; hold on;
-plot(X(chunks), (flow2(chunks))*50, 'b');
-plot(X(chunks),volf, 'r');
-plot(X(chunks),(flowr)*50, 'm');
-plot(X(chunks),tt, 'k', 'LineWidth', 2);
-
-% //plot(X(inv), tt, '*g');
-
-plot(X(chunks), cumsum(flowr), 'g');
-
+% chunks = 7051:10300;
+% 
+% inv = [8030:8040,16387:16394, 16539:16552];
+% volf = cumsum(flow2(chunks));
+%
+% 
+%
+%[p, s, mu] = polyfit(X(chunks), volf, 4);
+%tt = polyval(p,X(chunks),[],mu);
+%
+%
+%flowr = [0, diff(volf-tt)]; 
+%
+%% pp = splinefit(X, volf, 1);
+%% tt = ppval(pp, X);
+%
+%figure(1); clf; hold on;
+%plot(X(chunks), (flow2(chunks))*50, 'b');
+%plot(X(chunks),volf, 'r');
+%plot(X(chunks),(flowr)*50, 'm');
+%plot(X(chunks),tt, 'k', 'LineWidth', 2);
+%
+%% //plot(X(inv), tt, '*g');
+%
+%plot(X(chunks), cumsum(flowr), 'g');
+%
 
 %%
 % [X] = detrend(volf, 4);
