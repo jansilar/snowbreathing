@@ -72,7 +72,7 @@ function [x, data] = processOne(file, columns, filePath, f1, f2, crop, tEnd, var
   %repair flow data so that flow integral has constant tendency
   if (repairColumn > 0)
     toRepCol = data(:, repairColumn);
-    repaired = repairFlowData2(toRepCol', true);
+    repaired = repairFlowData22(toRepCol', true);
     data(:,repairColumn) = repaired;
   endif;
   
