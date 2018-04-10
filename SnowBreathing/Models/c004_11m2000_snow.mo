@@ -3,7 +3,7 @@ within SnowBreathing.Models;
 model c004_11m2000_snow
   Components.ExperimentalData.data_c004_11m2000 data annotation(
     Placement(visible = true, transformation(origin = {-60, 8}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  SnowBreathing.Components.Cone cone1(D_O2 = 3e-5,useCO2Solubility = true, wc = 100)  annotation(
+  SnowBreathing.Components.Cone cone1(D_CO2 = 2e-4, D_O2 = 2e-4,useCO2Solubility = true, wc = 100)  annotation(
     Placement(visible = true, transformation(origin = {-2,-12}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   Real volInTot;
 equation
