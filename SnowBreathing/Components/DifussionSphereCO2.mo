@@ -12,7 +12,7 @@ model DifussionSphereCO2
   Boolean exhale;
   field Real CO2(domain = omega, unit = "m3/m3") "CO2 concentration";
   field Real va_S(domain = omega, unit = "m/s") "velocity of advection";
-  parameter Real D = 0.00003 "coefficient of diffusion in snow [m2/s]";
+  parameter Real D_CO2 = 3e-5 "coefficient of CO2 diffusion in snow [m2/s]";
   parameter Real CO2_out = 0 "CO2 concentration out of the sphere";
   parameter Real CO2_init = 0 "initial CO2 concentartion";
   parameter Real R_out = 0.5, R_in = 0.1;
@@ -36,7 +36,7 @@ equation
 //    PCO2 = P * CO2 indomain omega;
 //    cCO2H2O = kH * PCO2 indomain omega "Henrys law, concentration in mol/kg";
 //    CO2Snow = MmCO2 * cCO2H2O * wc indomain omega;
-  der(CO2) * solubilityCoeff + (q / (facA * omega.x ^ 2) - 2 * D / omega.x) * pder(CO2, x) - D * pder(CO2, x, x) = 0 indomain omega "the advection-diffusion equation with CO2 solubility";
+  der(CO2) * solubilityCoeff + (q / (facA * omega.x ^ 2) - 2 * D_CO2 / omega.x) * pder(CO2, x) - D_CO2 * pder(CO2, x, x) = 0 indomain omega "the advection-diffusion equation with CO2 solubility";
   q = fluxConcB.q;
   exhale = q > 0;
 //CavityCO2-snow
