@@ -56,168 +56,12 @@ pkg load signal
 % first iteration - remove invalid readings and saturation 
 flow2 = repairFlowData(flow, flowRepair, true);
   
-% exclude too small segments to prevent overfitting
-breakPos = adjustMinimalDistances(flowRepair.manuallyInvalidated, 250, false);
-% adjust the volume
-flowr = adjustVolumeTrend(flow2, breakPos, true);
+%% exclude too small segments to prevent overfitting
+%breakPos = adjustMinimalDistances(flowRepair.manuallyInvalidated, 250, false);
+%% adjust the volume
+%flowr = adjustVolumeTrend(flow2, breakPos, true);
 
-flow2 = flow2(6666:16923);
-  N = length(flow2);
-  X = 1:N;
-  
-  vol = cumsum(flow2);
-  [p, s, mu] = polyfit(X, vol, 6);
-  tt = polyval(p,X,[],mu);
-
-  volr = vol - tt;
-
-flowr = [0, diff(volr)];
-
-% reconstructed volume - just for check
-rvol = cumsum(flowr);
-
-clf; hold on;
-plot(X, vol, 'b')
-plot(X, tt, 'k')
-
-
-
-%vol2 = cumsum(flowr);
-%% 2nd iteration: remove discontinuties
-%for i = 1:length(breakPos)-1
-%  chunk = breakPos(i):breakPos(i+1);
-%  
-%  chunkX = 1:length(chunk);
-%  [p, s, mu] = polyfit(chunkX, vol2(chunk), 6);
-%  ttt(chunk) = polyval(p,chunkX,[],mu);
-%end
-%
-%volr2 = vol2 - ttt;
-%% volr2(breakPos) = nan;
-%flowr2_nans = [0, diff(volr2)];
-%flowr2 = interp1(X(~isnan(flowr2_nans)), flowr2_nans(~isnan(flowr2_nans)), X, 'pchip');
-
-
-%
-%%figure(3); 
-%clf; hold on;
-%%plot(X, (flow2)*50, 'b');
-%plot(X,vol, 'r');
-%plot(X,tt, 'k', 'LineWidth', 2);
-%plot(X,vol2, 'r');
-%plot(X,tt, 'k', 'LineWidth', 2);
-%plot(X,tt2, 'k', 'LineWidth', 1);
-%plot(X,volr2, 'b');
-%plot(X, cumsum(flowr2), 'c')
-%plot(X, flowr2*50, 'm')
-%
-%plot(X, cumsum(flowr2), 'b');
-%plot(X(breakPos), tt(breakPos), 'kx', 'MarkerSize', 14);
-%
-%plot(volr, 'k');
-%%plot(X,(flowr)*50, 'r', 'LineWidth', 2);
-%plot(X(6650:end), cumsum(flowr(6650:end)), 'm')
-%
-%
-%ttt = shift(filter(sl_av, 1, tt), -ceil(filt_L/2 - 1));  
-%ttt = interp1(X, tt, X, 'spline');
-%plot(ttt, 'c');
-%% //plot(X(inv), tt, '*g');
-%
-%plot(X, cumsum(flowr{i}), 'g');
-
- % dataset c004-8S2000
-%flow2 = repairFlowData(flow, [19545:19547], [-0.1, -0.2, -0.2], [-90, 40, 40], true);
-
- % dataset c004-4m2000
-% flow2 = repairFlowData(flow, [7020:7076, 8700:8753, 13701:13754, 21542:21558, 22112:22121], [-0.1, -0.2, -0.2], [-90, 40, 30], true);
-
- % dataset c004-3m0200
-%  flow2 = repairFlowData(flow, [16873:16876, 12920:12929, 10827:10874, 7868:7917, 1696:1704],[0, -0.2, -0.2], [-60, 40, 30], true);
-
- 
- %% Test the volume  - cummulative sum of the flow
-% chunks = 7051:10300;
-% 
-% inv = [8030:8040,16387:16394, 16539:16552];
-% volf = cumsum(flow2(chunks));
-%
-% 
-%
-%[p, s, mu] = polyfit(X(chunks), volf, 4);
-%tt = polyval(p,X(chunks),[],mu);
-%
-%
-%flowr = [0, diff(volf-tt)]; 
-%
-%% pp = splinefit(X, volf, 1);
-%% tt = ppval(pp, X);
-%
-%figure(1); clf; hold on;
-%plot(X(chunks), (flow2(chunks))*50, 'b');
-%plot(X(chunks),volf, 'r');
-%plot(X(chunks),(flowr)*50, 'm');
-%plot(X(chunks),tt, 'k', 'LineWidth', 2);
-%
-%% //plot(X(inv), tt, '*g');
-%
-%plot(X(chunks), cumsum(flowr), 'g');
-%
-
-%%
-% [X] = detrend(volf, 4);
-% plot(X);
-% 
-% 
-% plot(flow2r, 'b');
-% plot(flow2, 'r');
-% 
-% % filter out volume changes by interpolation over some value?
-% satu = flow2 < 120 & flow2 > -114;
-% X = (1:N);
-% flow2r = interp1(X(satu), flow2(satu), 1:N, 'spline');
-
-
-%% filter out peaks and its neighbours
-%sat_locn = [true, sat_loc(1:end-2) | sat_loc(2: end-1) | sat_loc(3: end), true];
-%flowvalid(sat_loc) = false;
-%flowv2 = interp1((1:N)(flowvalid), flow(flowvalid), 1:N);
-
-
-%{
-figure(1)
-clf;hold on; plot(flow); plot(flowv); plot(flowv2);plot(flowvdif2, 'm'); 
-plot((1:N)(!flowvalid),flowv2(!flowvalid), 'g*');
-
-plot((1:N)(sat_locn),ones(1,N)(sat_locn), 'go');
-%}
-
-%% scan again
-
-
-%figure(1)
-%clf;hold on; plot(flow); plot(flowv); plot(flowvdif2); 
-%plot((1:N)(sat_loc),flowvdif2(sat_loc), '*');
-%
-%clf;hold on;plot(xflowvalid, flowv, '-');plot(xflowvalid, flowvdif, '-d');plot(xflowvalid,flowvdif2, '-ms');
-%plot(xflowvalid(sat_loc), 0, 'rx');
-%figure;
-%
-%%% find consecutive peaks
-%clf;hold on;plot(flowvalid, 'r')
-%flowvalid(sat_loc) = false;
-%
-%kern = [1 1 1];
-%flowc = conv(flowvalid, [1/4, 1/4, 1/4, 1/4], 'same');
-
-
-% find peak, which has distance to next peak at least 6 and at most 
-
-% TODO filter the saturation
-% get negative peaks under 60, wait for positive peak over 60 - invalidate data inbetween
-% interpolate
-%flowrepaired = interp1(xflowvalid, flowv, 1:N);
-%clf;hold on;plot(flowrepaired, '-');plot(flowv, '-');
+flow3 = repairFlowData22(flow2, true);
 
 %% filter the singal by moving average
 filt_L = 8;
@@ -225,8 +69,8 @@ sl_av = ones(1, filt_L)/filt_L;
 co2avg = shift(filter(sl_av, 1, co2), -ceil(filt_L/2 - 1));  
 o2avg = shift(filter(sl_av, 1, o2), -ceil(filt_L/2 - 1));  
 pressavg = shift(filter(sl_av, 1, press), -ceil(filt_L/2 - 1));  
-flowavg = shift(filter(sl_av, 1, flow2), -ceil(filt_L/2 - 1));
-volavg = shift(filter(sl_av, 1, vol), -ceil(filt_L/2 - 1));
+flowavg = shift(filter(sl_av, 1, flow3), -ceil(filt_L/2 - 1));
+%volavg = shift(filter(sl_av, 1, vol), -ceil(filt_L/2 - 1));
 
 %figure(1);clf;hold on; plot(co2, 'r');plot(co2avg, 'g')  ;
 
@@ -321,23 +165,26 @@ resavg = shift(filter(sl_av, 1, res), -ceil(filt_L/2 - 1));
 
 
 % 8S2000
-%rng = {1900:2222, 5900:6290, 7200:7600, 11640:11960};
+%rng = {900:2222, 5900:6290, 7200:7600, 11640:11960};
+rng = {8900:10222, 13900:14290, 15200:15600, 19640:19960};
 
 % 11m2000
-rng = {7400:7800, 9700:10200, 10500:10800,14350:14600};
+%rng = {7400:7800, 9700:10200, 10500:10800,14350:14600};
 
 
 f1 = 4;
 f2 = 5;
 figure(f1);clf;hold on; plot(co2avg, 'k');
 figure(f2); clf; hold on;
-graphStyle = {'xb', 'om', '-xr', 'og'};
+graphStyle = {'-xb', '-om', '-xr', '-og'};
 previewStyle = {'b', 'm', 'r', 'g'};
 
 for i = 1:length(rng)
   secs = [false(1, rng{i}(1)-1) validity(rng{i}) false(1, N-rng{i}(end))];
-  plot(pressavg, flowavg, graphStyle{i});
-%  plot(pressavg(secs), flowavg(secs), graphStyle{i});
+%  plot(pressavg, flowavg, graphStyle{i});
+  plot(pressavg(secs), flowavg(secs), graphStyle{i});
+  
+  % switch to data preview
   figure(f1); plot(X(secs), co2avg(secs), previewStyle{i}); figure(f2);
 end
 

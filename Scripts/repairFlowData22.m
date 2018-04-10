@@ -25,7 +25,6 @@ function flowr = repairFlowData22(flow2, doPlot)
 
     % reconstructed volume - just for check
     rvol = cumsum(flowr);
-    rsvol = cumsum(flowrs);
     if (doPlot)
         %figure; 
         clf;hold on;
