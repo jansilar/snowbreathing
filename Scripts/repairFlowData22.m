@@ -14,10 +14,16 @@ function flowr = repairFlowData22(flow2, doPlot)
     vol = cumsum(flow2);
     tt = filter(b,a,vol);
 
+   % tt2 = sgolayfilt(vol,20,251);
+   
+   ls = 900
+   tts = tt;
+   tts(1:end - ls) = tt(1+ls:end);
+
 %    [p, s, mu] = polyfit(X, vol, 6);
 %    tt = polyval(p,X,[],mu);
 
-    volr = vol - tt;
+    volr = vol - tts;
 
     flowr = [0, diff(volr)];
 
@@ -26,7 +32,8 @@ function flowr = repairFlowData22(flow2, doPlot)
     if (doPlot)
         figure; hold on;
         plot(X, vol, 'b')
-        plot(X, tt, 'k')
+        plot(X, tts, 'k', 'linewidth', 2)
+     %   plot(X, tt2, 'g', 'linewidth', 2)
 
         plot(X, flow2*50, 'b')
         plot(X, flowr*50, 'r')
@@ -34,17 +41,4 @@ function flowr = repairFlowData22(flow2, doPlot)
         plot(X, rvol, 'm')
         legend('volume', 'vol_fit','flow','flowr','volr')
     endif;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
