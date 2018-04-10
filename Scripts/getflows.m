@@ -19,7 +19,7 @@
 data_dir = 'c004-8S2000';
 flowRepair.invalidReading = [-0.1, -0.2, -0.2];
 flowRepair.manuallyInvalidated = ...
-  [19545:19547];
+  [5000, 15000, 20000 25000, 19545:19547, 28000];
 flowRepair.diffBounds = [-90, 40, 40];
 
 %% dataset c004-11m2000
@@ -60,6 +60,22 @@ flow2 = repairFlowData(flow, flowRepair, true);
 breakPos = adjustMinimalDistances(flowRepair.manuallyInvalidated, 250, false);
 % adjust the volume
 flowr = adjustVolumeTrend(flow2, breakPos, true);
+
+volr = cumsum(flowr);
+filt_L = 250;
+sl_av = ones(1, filt_L)/filt_L;
+volpermin = shift(filter(sl_av, 1, volr), -ceil(filt_L/2 - 1))*60;  
+
+volflow = (volpermin - volr);
+volflow2 = volflow > 0;
+volpers = cumsum(volflow2);
+figure;
+clf;hold on;
+plot(volr, 'k');
+plot(volpermin/60, 'r');
+plot(60*volpers./(1:N), 'm')
+
+
 
 %vol2 = cumsum(flowr);
 %% 2nd iteration: remove discontinuties
