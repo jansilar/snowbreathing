@@ -1,16 +1,21 @@
-function repairedFlow = repairFlowData(varargin)
-% filter the positive saturation from the flow
-% there are sometimes -0.1 and -0.2 invalid data reads
+function repairedFlow = repairFlowData(flow, flowRepairStruct, dbg)
+% filter invalid readings and positive saturations from the flow
+%
+% flowRepair.invalidReading = [-0.1, -0.2, -0.2];
+% flowRepair.manuallyInvalidated = ...
+%  [5000, 6650, 8030:8040,10265:10292, 12500, 14500, 16300:16327, ...
+%  16387:16394, 16539:16552, 16704];
+% flowRepair.diffBounds = -110, 40, 20];
 
-defaults = {[], [], [-0.1, -0.2, -0.2], [-110, 40, 20], true};
-defaults(1:nargin) = varargin;
+%defaults = {[], [], [-0.1, -0.2, -0.2], [-110, 40, 20], true};
+%defaults(1:nargin) = varargin;
+%
+%flow = (defaults{1}); 
 
-flow = (defaults{1}); 
-invalidFlowData = defaults{2};
-badReading= defaults{3}; 
+invalidFlowData = flowRepairStruct.manuallyInvalidated;
+badReading= flowRepairStruct.invalidReading; 
 % [min, max, maxwidth] - min peak of diff, max peak of diff and maximal width of sat
-diffBounds= defaults{4};
-showPlot = defaults{5};
+diffBounds= flowRepairStruct.diffBounds;
 
 N = length(flow);
 X = (1:N);
@@ -72,7 +77,7 @@ plot((1:N)(sat_loc),flowvdif2(sat_loc), '*');
 
 %% df
 ms = 15;
-if (showPlot)
+if (dbg)
   clf;hold on; 
   plot(flow, '-r') ;
   plot(flowvdif, '-g');

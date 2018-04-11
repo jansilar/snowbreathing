@@ -9,7 +9,14 @@
   spo2 = data_raw_read(:, 1);
   N = length(spo2);
   spo2valid = spo2 > 10 & spo2 < 101;  
-  axis_x = (1:N)(spo2valid);
+  X = (1:length(spo2));
+  spo2(isnan(spo2)) = 0;
+  
+  spo2r = interp1(X(spo2valid), spo2(spo2valid), X, 'linear');
 
-  plot(axis_x, spo2(spo2valid), 'x');
+  figure;
+  clf; hold on;
+  %plot(X, spo2, 'b');
+  plot(X, spo2r, 'r');
+  plot(X(spo2valid), spo2r(spo2valid), 'b');
   
