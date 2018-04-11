@@ -1,13 +1,13 @@
 within SnowBreathing.Components;
 
 model DifussionSphereCO2
-  parameter Real theta(unit = "rad") = pi "angle from cone axle to the wall";
-  parameter Real facA(unit = "1/m2") = 2 * pi * (1 - cos(theta)) "facA*r^2 = cone outside surface area";
+  constant Real theta(unit = "rad") = pi "angle from cone axle to the wall";
+  constant Real facA(unit = "1/m2") = 2 * pi * (1 - cos(theta)) "facA*r^2 = cone outside surface area";
   parameter Boolean useCO2Solubility = false;
   Real solubilityCoeff(unit = "1") = if useCO2Solubility then 1 + MmCO2 * kH * P * wc / rho_CO2 else 1;
   //Snow
   constant Real pi = Modelica.Constants.pi;
-  DomainLineSegment1D omega(L = R_out, N = 100, x0 = R_in) "in 1D, left is boundary of the central cavity of diameter x0, x coordinate is actually r";
+  DomainLineSegment1D omega(L = R_out, N = NNodes, x0 = R_in) "in 1D, left is boundary of the central cavity of diameter x0, x coordinate is actually r";
   Real q "volume flow rate";
   Boolean exhaleL, exhaleR;
   field Real CO2(domain = omega, unit = "m3/m3") "CO2 concentration";
@@ -15,7 +15,10 @@ model DifussionSphereCO2
   parameter Real D_CO2 = 3e-5 "coefficient of CO2 diffusion in snow [m2/s]";
   parameter Real CO2_out = 0 "CO2 concentration out of the sphere";
   parameter Real CO2_init = 0 "initial CO2 concentartion";
-  parameter Real R_out = 0.5, R_in = 0.1;
+  constant Real V_cavity (unit = "m3")= 0.002 "cavity volume";
+  constant Real R_in(unit="m") = (V_cavity*3/facA)^(1/3);
+  constant Real R_out(unit = "m") = 1;
+  constant Integer NNodes = integer((R_out - R_in)*100) + 1 "so that each cell is 1cm";
   parameter Real rho_CO2(unit = "kg/m3") = 1.977 "kg/m3 (gas at 1 atm and 0 degC)";
   parameter Real rho_air(unit = "kg/m3") = 1.2922 "kg/m3 (gas at 1 atm and 0 degC)";
   parameter Real kH(unit = "mol/kg.Pa") = 0.034 * 1e-5 "mol/kg*Pa (at 25degC) TODO: get value for 0degC!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";

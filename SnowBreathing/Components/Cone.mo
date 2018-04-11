@@ -1,10 +1,7 @@
 within SnowBreathing.Components;
 
 model Cone
-  extends SnowBreathing.Components.DifussionSphereCO2O2(theta=0.24517, R_in = R_cavity, R_out = R_cavity + R_snow);
-  parameter Real V_cavity (unit = "m3")= 0.002 "cavity volume";
-  parameter Real R_cavity (unit = "m") = (V_cavity*3/4/pi)^(1/3) "cavity radius";
-  parameter Real R_snow (unit = "m") = 1 "snow thicknes";
+  extends SnowBreathing.Components.DifussionSphereCO2O2(theta=0.24517);
 equation
 
 annotation(
