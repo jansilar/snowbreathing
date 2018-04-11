@@ -2,7 +2,6 @@ function flowr = repairFlowData22(flow2, doPlot)
 %% Head
 % pkg load signal
 %low-pass filter design:
-    pkg load signal;
     N = length(flow2);
     X = 1:N;
     vol = cumsum(flow2);
@@ -36,7 +35,7 @@ function flowr = repairFlowData22(flow2, doPlot)
 
         plot(X, rvol, 'g')
         legend('volume', 'vol_fit','flow','flowr','volr')
-    endif;
+    end;
     
 %%% get spectrum
 %%    volf = vol(7000:17000);

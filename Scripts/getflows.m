@@ -61,6 +61,7 @@ flow2 = repairFlowData(flow, flowRepair, true);
 %% adjust the volume
 %flowr = adjustVolumeTrend(flow2, breakPos, true);
 
+vol = cumsum(flow2);
 flow3 = repairFlowData22(flow2, true);
 
 %% filter the singal by moving average
