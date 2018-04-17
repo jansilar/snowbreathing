@@ -3,20 +3,21 @@ function inputData(dir)
   filePath = ['../Data/' dir '/']
   run([filePath '/data_info.m'])
   close all;
-  [xW, dataW] = processOne(fileW, columnW, filePath, fW , fTarget, cropWSimul, tEndW, varIW, varNameW, 4, mi);
-  [xWD, dataWD] = processOne(fileWD, columnWD, filePath, fWD, fTarget, cropWDSimul, tEndWD, varIWD, varNameWD, -1);
+  %[xW, dataW] = processOne(fileW, columnW, filePath, fW , fTarget, cropWSimul, tEndW, varIW, varNameW, -1);
+  [xW, dataW] = processOne(filePath, di.W, di.com, -1);
+  [xWD, dataWD] = processOne(filePath, di.WD, di.com, -1);
   xdata = mergeData({xW, xWD}, {dataW, dataWD});
-  varNames = [varNameW, varNameWD]
+  varNames = [di.W.varName, di.WD.varName]
   figure;
   hold on;
-  plotData(xdata, varNames, [1, 2, 4, 6, 7], [1, 1, 1/6, 1, 1], 'x');
+  plotData(xdata, varNames, [1, 2, 3, 4, 6, 7], [1, 1, 1, 1/6, 1, 1], 'x');
   CO2O2_100 = xdata(:,[1,7,8]);
   CO2O2 = avgDownsample(CO2O2_100, 20);
   save('-v4',[filePath 'CO2O2.mat'], 'CO2O2')  
   Flow_100 = xdata(:,[1,5]);
   Flow = avgDownsample(Flow_100,20);
   %set zero flow after disconnecting the mouthpiece
-  Flow(Flow(:,1) > -commonShift,2) = 0;
+  Flow(Flow(:,1) > di.com.tDisconnected,2) = 0;
   %save to file
   save('-v4',[filePath 'Flow.mat'], 'Flow')  
 

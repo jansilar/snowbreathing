@@ -1,7 +1,7 @@
-function [x, data] = processOne(file, columns, filePath, f1, f2, crop, tEnd, varI, varName, repairColumn, mi)
+function [x, data] = processOne(filePath, dif, dic, repairColumn)
   %read the data from file:
-  ['reading ' filePath file]
-  data = importdata([filePath file],'\t',3).data(:,columns);
+  ['reading ' filePath dif.file]
+  data = importdata([filePath dif.file],'\t',3).data(:,dif.column);
   if (repairColumn > 0)
     if (nargin < 11)
       error('mi must be given as argument of processOne function in order to repair data.');
@@ -11,7 +11,7 @@ function [x, data] = processOne(file, columns, filePath, f1, f2, crop, tEnd, var
     data(:,repairColumn) = repaired;
   endif;
   %resample data, return new time grid as well. f1 .. original sample rate, f2 .. new sample rate.
-  [x, data] = resampleX(data,f1,f2);
+  [x, data] = resampleX(data,dif.f,dic.fTarget);
   %------------------ Uncoment to find crop time range (crop_): ----------------------
   
   %plot(x,data(:,varI));
@@ -19,15 +19,15 @@ function [x, data] = processOne(file, columns, filePath, f1, f2, crop, tEnd, var
   %---------------------------------------------------------------------------
   
   %crop the starting and final data with nonsens values
-  [x,data] = cropData(x,data,crop);
+  [x,data] = cropData(x,data,dif.crop);
   
   %----------------- Uncomment to find the time, when cone was disconnected (tEnd_)------
  % plot(x,data(:,varI));
  % error('Find the time, when cone was disconnected')
   %--------------------------------------------------------------------------------------
 
-  %offset in time so that the zero time is in the end, when snow cpme was dosconnected
-  x = doOffset(x,tEnd, f2);
+  %offset in time so that the zero time is when the snow come is connected
+  x = doOffset(x,dif.tConnected, dic.fTarget);
    %plot(x,data(:,varI));
   %error('Plotting data with offset')
   %repair flow data so that flow integral has constant tendency
@@ -38,10 +38,10 @@ function [x, data] = processOne(file, columns, filePath, f1, f2, crop, tEnd, var
   endif;
   
   %------------ Uncomment to see the result ----------------------------
- %   plot(x,data(:,varI));
-%    title(file);
+%    plot(x,data(:,dif.varI));
+%    title(dif.file);
 %    xlabel('time [s]');
-%    ylabel(varName(varI));
- %   error('See one processed dataset');
+%    ylabel(dif.varName(dif.varI));
   %---------------------------------------------------------------------
+%  error("procvessOneFinished")
 end;
