@@ -34,7 +34,7 @@ function flowr = repairFlowData22(flow2, doPlot)
         plot(X, flowr*50, 'r')
 
         plot(X, rvol, 'g')
-        legend('volume', 'vol_fit','flow','flowr','volr')
+        legend('volume', 'vol_fit','flow*50','flowr*50','volr')
     end;
     
 %%% get spectrum

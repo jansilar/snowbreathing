@@ -15,12 +15,12 @@
 %    22112:22121, 23064, 26000];
 %flowRepair.diffBounds = [-90, 40, 30];
 
-% dataset c004-8S2000
-data_dir = 'c004-8S2000';
-flowRepair.invalidReading = [-0.1, -0.2, -0.2];
-flowRepair.manuallyInvalidated = ...
-  [5000, 15000, 20000 25000, 19545:19547, 28000];
-flowRepair.diffBounds = [-90, 40, 40];
+% % dataset c004-8S2000
+% data_dir = 'c004-8S2000';
+% flowRepair.invalidReading = [-0.1, -0.2, -0.2];
+% flowRepair.manuallyInvalidated = ...
+%   [5000, 15000, 20000 25000, 19545:19547, 28000];
+% flowRepair.diffBounds = [-90, 40, 40];
 
 %% dataset c004-11m2000
 %data_dir = 'c004-11m2000';
@@ -30,12 +30,22 @@ flowRepair.diffBounds = [-90, 40, 40];
 %  16387:16394, 16539:16552, 16704, 16727, 21633, 25000];
 %flowRepair.diffBounds = [-110, 40, 20];
 
+%% dataset c013-001m2000
+data_dir = 'c013-001m2000';
+flowRepair.invalidReading = [-0.1, -0.2, -0.2];
+flowRepair.manuallyInvalidated = [] ;
+% ...
+%  [1, 5000, 6650, 8030:8040,10265:10292, 12500, 14500, 16300:16327, ...
+%  16387:16394, 16539:16552, 16704, 16727, 21633, 25000];
+flowRepair.diffBounds = [-110, 40, 20];
+file = ['../Data/' data_dir '/' data_dir 'wavesDots.asc'];
+
 %% 
 pkg load signal
 
   file = ['../Data/' data_dir '/' data_dir 'wavesDots.asc'];
-%  rowsW = [1, 2, 3, 4, 5];
-  rowsW = [1, 2, 3, 4];
+ rowsW = [1, 2, 3, 4, 5];
+%   rowsW = [1, 2, 3, 4];
   fs = 25;
 
 %% load data - pCO2, pO2, Flow
@@ -49,8 +59,8 @@ pkg load signal
   X = 1:N;
   co2 = data(:, 1).';
   o2 = data(:, 2).';
-  press = data(:, 3).';  
-  flow = data(:, 4).';
+  press = data(:, 4).';  
+  flow = data(:, 5).';
 %   vol = data(:, 5).';
 
 % first iteration - remove invalid readings and saturation 
