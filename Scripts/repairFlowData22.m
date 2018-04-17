@@ -1,4 +1,6 @@
 function flowr = repairFlowData22(flow2, doPlot) 
+% repairs the volume drift from the flow signal
+
 %% Head
 % pkg load signal
 %low-pass filter design:
@@ -23,7 +25,7 @@ function flowr = repairFlowData22(flow2, doPlot)
     flowr = [0, diff(volr)];
 
     % reconstructed volume - just for check
-    rvol = cumsum(flowr);
+    
     if (doPlot)
         %figure; 
         clf;hold on;
@@ -33,6 +35,7 @@ function flowr = repairFlowData22(flow2, doPlot)
         plot(X, flow2*50, 'b')
         plot(X, flowr*50, 'r')
 
+        rvol = cumsum(flowr);
         plot(X, rvol, 'g')
         legend('volume', 'vol_fit','flow*50','flowr*50','volr')
     end;

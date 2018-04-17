@@ -4,9 +4,9 @@
 di.W.file = 'waves-c013-001m2000.txt';
 di.WD.file = 'dutina-waves-c013-001m2000.txt';
 
-di.T.varName = {"HR", "SpO2"};
-di.W.varName = {"CO2", "O2", "Paw", "Flow", "Vol"};
-di.WD.varName = {"CO2_D", "O2_D"};
+di.T.varName = {'HR', 'SpO2'};
+di.W.varName = {'CO2', 'O2', 'Paw', 'Flow', 'Vol'};
+di.WD.varName = {'CO2_D', 'O2_D'};
 
 %columns plotted to find the offsets:
 di.T.varI = 1;

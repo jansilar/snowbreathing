@@ -36,19 +36,20 @@ flowvdif = [flowv(1:end-1) - flowv(2:end), 0];
 
 %% filter out positive saturation - find a huge negative difference and search for a positive diff within some interval.
 sat = flowvalid;
-s1 = flowvdif < diffBounds(1);
-s2 = [s1(1:end-1) & ~(s1(2:end)), true];
-for i = 1:N-diffBounds(3) -1;
-  if s2(i)
-    for j = i:i+diffBounds(3)
-      if flowvdif(j) > diffBounds(2)
-        % found it!
-        sat(i:j+1) = false;
-      end;
+if ~isempty(diffBounds)
+    s1 = flowvdif < diffBounds(1);
+    s2 = [s1(1:end-1) & ~(s1(2:end)), true];
+    for i = 1:N-diffBounds(3) -1;
+      if s2(i)
+        for j = i:i+diffBounds(3)
+          if flowvdif(j) > diffBounds(2)
+            % found it!
+            sat(i:j+1) = false;
+          end;
+        end;
+      end
     end;
-  end
-end;
-
+end
 
 % exclude additional points manually
 % it is better to do it after the automatic peak detection, 

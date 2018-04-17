@@ -35,4 +35,4 @@ function inputData(dir)
   %hold on;
   %plot(xdata(:,1),xdata(:,6))
 
-end;
+end
