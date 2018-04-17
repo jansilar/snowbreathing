@@ -3,3 +3,7 @@ Discretized
 *.mat
 *.kst
 *.drc
+*.zip
+*~
+*.pdf
+octave-workspace
