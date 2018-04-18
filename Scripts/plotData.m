@@ -8,4 +8,4 @@ function plotData(xData, varNames, iCol, multiplier)
   end;
   xlabel('time (s)');
   legend(varNames(iCol));
-end;
+end

@@ -1,7 +1,7 @@
 function [xdataOut] = mergeData(xs, datas)
-  if (size(xs) != size(datas))
+  if (size(xs) ~= size(datas))
     error('x and data are of different size in mergeData');
-  endif;
+  end;
   size(xs)
   xL = -inf;
   xR = inf;
@@ -13,8 +13,8 @@ function [xdataOut] = mergeData(xs, datas)
   end;
   [xdataOut, data1] = cropData(xs{1}, datas{1}, [xL,xR] );
   xdataOut = [xdataOut' data1];
-  for i = 2:size(xs)(2)
-    [_, data1] = cropData(xs{i}, datas{i}, [xL,xR] );
+  for i = 2:size(xs,2)
+    [~ , data1] = cropData(xs{i}, datas{i}, [xL,xR] );
     xdataOut = [xdataOut data1];
   end;
-end;
+end

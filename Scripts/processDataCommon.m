@@ -10,4 +10,4 @@ clear all;
 dir = 'c013-001m2000';
 
 %  allData(dir);
-inputData(dir);
+inputData(dir,1);

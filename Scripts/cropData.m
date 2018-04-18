@@ -4,4 +4,4 @@ function [xOut, dataOut] = cropData(x, data, cropTimes)
   cropI2 = find(x<=cropTimes(2)+eps,1,'last');
   xOut = x(cropI1:cropI2);
   dataOut = data(cropI1:cropI2,:);
-end;
+end
