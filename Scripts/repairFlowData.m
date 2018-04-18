@@ -79,9 +79,9 @@ plot((1:N)(sat_loc),flowvdif2(sat_loc), '*');
 %% df
 ms = 15;
 if (dbg)
+  figure(101);
   clf;hold on; 
   plot(flow, '-r') ;
-  plot(flowvdif, '-g');
   plot(repairedFlow, 'b', 'LineWidth', 2); 
   plot(flowvdif, '-g');
 
@@ -96,6 +96,8 @@ if (dbg)
   
   plot(X, vol, 'k');
   plot(X(invalidFlowData), vol(invalidFlowData), 'r.', 'markersize', ms);
+  legend('original Q', 'repaired Q','d Q / dx', 'invalid reading', ...
+      'sat', 'manual inv', 'volume', 'manual inv')
   
 end;
 

@@ -20,7 +20,7 @@ powerCoeff = [powerfit.a, powerfit.b];
 rms = validity.rsquare;
 
 if doPlot
-    figure(); 
+    figure(103); 
     clf; hold on;
     xp = (0:0.1:max(pressure));
 
@@ -29,4 +29,6 @@ if doPlot
     % observe fit
     plot(xp, powerfit.a*xp.^powerfit.b, 'k-', 'linewidth', 4);
     legend('exhale', 'inhale', 'power fit')
+    xlabel('abs(pressure)')
+    ylabel('abs(flow)')
 end
