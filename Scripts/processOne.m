@@ -20,7 +20,8 @@ function [x, data] = processOne(filePath, di, fileId, repairColumn, setImpDat)
     'Find the times to crop out the nonsens data on boundaries,\n'
     'set "crop" in data_info.m" and press any key.\n'
     pause();
-    diNew  = updateDataInfo(di)
+    diNew = readDataInfo(di.baseName);
+    %diNew  = updateDataInfo(di)
     diNew.W
     dif = diNew.(fileId)
     'nacteno'

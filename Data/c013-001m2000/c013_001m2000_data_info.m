@@ -2,6 +2,7 @@ function di = c013_001m2000_data_info()
     %file names:
     %fileT = 'trends-c013-001m2000.txt';
     %fileTD = 'dutina-trends-c013-001m2000.txt';
+    di.baseName = 'c013-001m2000';
     di.W.file = 'waves-c013-001m2000.txt';
     di.WD.file = 'dutina-waves-c013-001m2000.txt';
 
