@@ -7,12 +7,6 @@ for i = 1:length(dataset)
     press = raw_read.data(:, dataset(i).PressFlowPos(1)).';  
     co2 = raw_read.data(:, 1).';
 
-    % reconstruct raw flow - both pos and neg sides
-    if ~isnan(pc)
-        flowrfpnorm = reconstructFlow(press, pc, doPlot);
-    else
-        % TODO
-    end
     
     
     raw_read.data(:, dataset(i).PressFlowPos(2)) = flowrfpnorm;

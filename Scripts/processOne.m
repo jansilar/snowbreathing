@@ -1,17 +1,18 @@
-function [x, data] = processOne(filePath, di, fileId, repairColumn, setImpDat)
+function [x, data] = processOne(filePath, di, fileId, setImpDat)
   dif = di.(fileId);
   %read the data from file:
   filepath = [filePath dif.file];
   ['reading ' filePath dif.file]
   data = importFile(filepath, dif.column);
-  if (repairColumn > 0)
-    if (nargin < 11)
-      error('mi must be given as argument of processOne function in order to repair data.');
-    end;
-    toRepCol = data(:, repairColumn);
-    repaired = repairFlowData(toRepCol', mi, [-0.1, -0.2, -0.2], [-110, 40, 20], false);
-    data(:,repairColumn) = repaired;
-  end;
+% TODO repairdata
+%   if (repairColumn > 0)
+%     if (nargin < 11)
+%       error('mi must be given as argument of processOne function in order to repair data.');
+%     end;
+%     toRepCol = data(:, repairColumn);
+%     repaired = repairFlowData(toRepCol', mi, [-0.1, -0.2, -0.2], [-110, 40, 20], false);
+%     data(:,repairColumn) = repaired;
+%   end;
   %resample data, return new time grid as well. f1 .. original sample rate, f2 .. new sample rate.
   [x, data] = resampleX(data,dif.f,di.fTarget);
   %------------------ Uncoment to find crop time range (crop_): ----------------------
