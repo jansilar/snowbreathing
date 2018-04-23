@@ -1,6 +1,4 @@
-#specific part:
-#--------------
-#file names:
+%file names:
 fileT = 'trends--c004-4m2000.txt';
 fileTD = 'dutina-trends-c004-4m2000.txt';
 fileW = 'waves-c004-4m2000.txt';
