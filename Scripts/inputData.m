@@ -9,9 +9,11 @@ function inputData(baseName,setImpDat)
     [xWD, dataWD] = processOne(filePath, di, 'WD', setImpDat);
     xdata = mergeData({xW, xWD}, {dataW, dataWD});
     varNames = [di.W.varName, di.WD.varName]
+    di.tDisconnected = di.W.tDisconnected - di.W.tConnected;
     figure;
     hold on;
     plotData(xdata, varNames, [1, 2, 3, 4, 6, 7], [1, 1, 1, 1/6, 1, 1]);
+    plot(di.tDisconnected,0,'k+');
     setImpDat = 0;
     if tuneFinished
         break;

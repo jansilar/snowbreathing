@@ -36,7 +36,7 @@ function di = c013_001m2000_data_info()
     di.W.tConnected = 441.2;
     di.WD.tConnected = 381.2;
 
-    %time when the cone was disconnected (after first crop):
-    di.tDisconnected = 732.5;
+    %time when the cone was disconnected:
+    di.W.tDisconnected = 732.5;
 end
 
