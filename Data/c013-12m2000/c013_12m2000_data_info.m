@@ -26,7 +26,7 @@ function di = c013_001m2000_data_info()
     di.TD.f = 1;
     di.W.f = 25;
     di.WD.f = 100;
-    di.fTarget = 100;
+    di.fTarget = 25;
 
     %crop times for simulation input data
     di.W.crop = [251 858];

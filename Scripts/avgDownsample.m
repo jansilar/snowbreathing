@@ -1,4 +1,4 @@
-function newData = avgDownsample(data,n)
+function newData = avgDownSample(data,n)
   %replace n consequent data samples by their average
   newData = [];
   nCols = size(data,2);

@@ -5,8 +5,8 @@ function inputData(baseName,setImpDat)
   tuneFinished = 0;
   while (1)
     close all;
-    [xW, dataW] = processOne(filePath, di, 'W', -1, setImpDat);
-    [xWD, dataWD] = processOne(filePath, di, 'WD', -1, setImpDat);
+    [xW, dataW] = processOne(filePath, di, 'W', setImpDat);
+    [xWD, dataWD] = processOne(filePath, di, 'WD', setImpDat);
     xdata = mergeData({xW, xWD}, {dataW, dataWD});
     varNames = [di.W.varName, di.WD.varName]
     figure;
@@ -23,11 +23,13 @@ function inputData(baseName,setImpDat)
         tuneFinished = 1;
     end;
   end;
-  CO2O2_100 = xdata(:,[1,7,8]);
-  CO2O2 = avgDownsample(CO2O2_100, 20);
+  CO2O2_25 = xdata(:,[1,7,8]);
+%  CO2O2 = avgDownsample(CO2O2_100, 20);
+  CO2O2 = CO2O2_25;
   save('-v4',[filePath 'CO2O2.mat'], 'CO2O2')  
-  Flow_100 = xdata(:,[1,5]);
-  Flow = avgDownsample(Flow_100,20);
+  Flow_25 = xdata(:,[1,5]);
+  Flow = Flow_25;
+%  Flow = avgDownsample(Flow_100,20);
   %set zero flow after disconnecting the mouthpiece
   Flow(Flow(:,1) > di.tDisconnected,2) = 0;
   %save to file

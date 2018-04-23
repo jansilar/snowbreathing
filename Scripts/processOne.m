@@ -35,11 +35,11 @@ fprintf(['Processing ' caseID '\n']);
   x = doOffset(x,dif.tConnected, di.fTarget);
   
   %repair flow data so that flow integral has constant tendency
-  if (repairColumn > 0)
-    toRepCol = data(:, repairColumn);
-    repaired = repairFlowData22(toRepCol', true);
-    data(:,repairColumn) = repaired;
-  end;
+%  if (repairColumn > 0)
+%    toRepCol = data(:, repairColumn);
+%    repaired = repairFlowData22(toRepCol', true);
+%    data(:,repairColumn) = repaired;
+%  end;
   
   %------------ Uncomment to see the result ----------------------------
 %    plot(x,data(:,dif.varI));
