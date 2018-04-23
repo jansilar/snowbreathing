@@ -1,67 +1,12 @@
-datafile.name = 'c013-001m2000';
-datafile.range = (18436:18698);
-% datafile.range = {15247:15420};
-datafile.PressFlowPos = [4 5];
-dataset(1) = datafile;
-
-datafile.name = 'c013-12m2000';
-datafile.range = (16079:16350);
-% datafile.range = {12566:12895};
-datafile.PressFlowPos = [4 5];
-dataset(2) = datafile;
-
-doPlot = false;
-for i = 1:length(dataset)
-    df = dataset(i);
-    % for each datafile
-    file = ['../Data/' df.name '/' df.name 'wavesDots.asc'];
-    raw_read = importdata(file,'\t',2);
-    data = raw_read.data;
-%   co2 = data(:, 1).';
-%   o2 = data(:, 2).';
-    press = data(:, df.PressFlowPos(1)).';  
-    flow = data(:, df.PressFlowPos(2)).';
-    %   vol = data(:, 5).';
-
-    N = length(data);
-    X = 1:N;
-
-    flowRepair.invalidReading = [0, -0.1, -0.2];
-    flowRepair.manuallyInvalidated = [];
-    flowRepair.diffBounds = [];
-
-    % first iteration - remove invalid readings
-    flow2 = repairFlowData(flow(df.range), flowRepair, true);
-%     % second iteration - normalize the volume drift
-%     flow3 = repairFlowData22(flow2(df.range), true);
-    [pc, rms] = fitResistancePower(flow2, press(df.range), doPlot);
-    if doPlot
-        title([df.name ' with rms ' num2str(rms)])
-    end
-    pfpar(i, :) = pc;
-end
 
 %% Reconstruct the flow
-
 for i = 1:length(dataset)
 
     file = ['../Data/' dataset(i).name '/' dataset(i).name 'wavesDots.asc'];
     raw_read = importdata(file,'\t',2);
     press = raw_read.data(:, dataset(i).PressFlowPos(1)).';  
+    co2 = raw_read.data(:, 1).';
 
-    % reconstruct raw flow - both pos and neg sides
-    clear pos;
-    clear flowrfp;
-    pos = press >= 0;
-    flowrfp( pos) =  pfpar(i, 1).*( press( pos)).^pfpar(i, 2);
-    flowrfp(~pos) = -pfpar(i, 1).*(-press(~pos)).^pfpar(i, 2);
-    flowrfpnorm = repairFlowData22(flowrfp, doPlot);
-    if doPlot
-        figure();clf;hold on;
-        flow = raw_read.data(:, df.PressFlowPos(2)).';
-        plot(flow, 'b', 'Linewidth', 1);
-        plot(flowrfpnorm, 'r', 'Linewidth', 2);
-    end
     
     
     raw_read.data(:, dataset(i).PressFlowPos(2)) = flowrfpnorm;

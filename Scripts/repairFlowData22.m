@@ -27,7 +27,7 @@ function flowr = repairFlowData22(flow2, doPlot)
     % reconstructed volume - just for check
     
     if (doPlot)
-        %figure; 
+        figure(102); 
         clf;hold on;
         plot(X, vol, 'b')
         plot(X, tts, 'k', 'linewidth', 2)
@@ -38,6 +38,7 @@ function flowr = repairFlowData22(flow2, doPlot)
         rvol = cumsum(flowr);
         plot(X, rvol, 'g')
         legend('volume', 'vol_fit','flow*50','flowr*50','volr')
+        title('Volume drift correction');
     end;
     
 %%% get spectrum

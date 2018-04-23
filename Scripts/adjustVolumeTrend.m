@@ -1,4 +1,5 @@
 function flowr = adjustVolumeTrend(flow, breakPos, dbg)
+% adjustvolume trend by picewise polynomial
 
 N = length(flow);
 X = 1:N;

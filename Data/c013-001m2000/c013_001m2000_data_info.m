@@ -38,5 +38,11 @@ function di = c013_001m2000_data_info()
 
     %time when the cone was disconnected (after first crop):
     di.tDisconnected = 240.5;
+	
+	% repair the flow - if the pc exist,then the rest is not required and vice versa
+	di.flowRepair.pc = [27.9283, 0.57865];
+	di.flowRepair.manuallyInvalidated = [];
+	di.flowRepair.invalidReading = [-0.1, -0.2, -0.2];
+	di.flowRepair.diffBounds = [-90, 40, 30];
 end
 

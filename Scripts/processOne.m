@@ -1,18 +1,19 @@
-function [x, data] = processOne(filePath, di, caseID, repairColumn, setImpData)
+function [x, data] = processOne(filePath, di, caseID, setImpData)
 fprintf(['Processing ' caseID '\n']);
   di1 = di.(caseID);
   %read the data from file:
   filepath = [filePath di1.file];
   disp(['reading ' filePath di1.file]);
   data = importFile(filepath, di1.column);
-  if (repairColumn > 0)
-    if (nargin < 11)
-      error('mi must be given as argument of processOne function in order to repair data.');
-    end;
-    toRepCol = data(:, repairColumn);
-    repaired = repairFlowData(toRepCol', mi, [-0.1, -0.2, -0.2], [-110, 40, 20], false);
-    data(:,repairColumn) = repaired;
-  end;
+% TODO repairdata
+%  if (repairColumn > 0)
+%    if (nargin < 11)
+%      error('mi must be given as argument of processOne function in order to repair data.');
+%    end;
+%    toRepCol = data(:, repairColumn);
+%    repaired = repairFlowData(toRepCol', mi, [-0.1, -0.2, -0.2], [-110, 40, 20], false);
+%    data(:,repairColumn) = repaired;
+%  end;
   %resample data, return new time grid as well. f1 .. original sample rate, f2 .. new sample rate.
   [x, data] = resampleX(data,di1.f,di.fTarget);
 
@@ -48,3 +49,4 @@ fprintf(['Processing ' caseID '\n']);
   %---------------------------------------------------------------------
     fprintf(['processing ' di.baseName ' ' caseID ' finished\n']);
 end
+
