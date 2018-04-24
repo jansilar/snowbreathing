@@ -5,15 +5,11 @@ fprintf(['Processing ' caseID '\n']);
   filepath = [filePath di1.file];
   disp(['reading ' filePath di1.file]);
   data = importFile(filepath, di1.column);
-% TODO repairdata
-%  if (repairColumn > 0)
-%    if (nargin < 11)
-%      error('mi must be given as argument of processOne function in order to repair data.');
-%    end;
-%    toRepCol = data(:, repairColumn);
-%    repaired = repairFlowData(toRepCol', mi, [-0.1, -0.2, -0.2], [-110, 40, 20], false);
-%    data(:,repairColumn) = repaired;
-%  end;
+
+  % Repair flow data - either reconstruct from the pressure or filter the
+  % existent flow data
+  data(:,di.W.columnFlow) = repairFlowData(data(:, di.W.columnFlow), data(:, di.W.columnPress),di.flowRepair, true);
+     
   %resample data, return new time grid as well. f1 .. original sample rate, f2 .. new sample rate.
   [x, data] = resampleX(data,di1.f,di.fTarget);
 
