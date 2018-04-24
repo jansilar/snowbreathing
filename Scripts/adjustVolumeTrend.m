@@ -1,55 +1,59 @@
-function flowr = adjustVolumeTrend(flow, breakPos, dbg)
-% adjustvolume trend by picewise polynomial
+function flowr = adjustVolumeTrend(flow2, doPlot) 
+% repairs the volume drift from the flow signal
 
-N = length(flow);
-X = 1:N;
-
-%integrate flow to get vol
-vol = cumsum(flow);
-
-tt = zeros(1, N);
-% piecewise remove nonlinear trends
-for i = 1:length(breakPos)-1
-  chunk = breakPos(i):breakPos(i+1);
-  
-  chunkX = 1:length(chunk);
-  [p, s, mu] = polyfit(chunkX, vol(chunk), 3);
-  tt(chunk) = polyval(p,chunkX,[],mu);
-end
+%% Head
+% pkg load signal
+%low-pass filter design:
+    N = length(flow2);
+    X = (1:N)';
+    vol = cumsum(flow2);
 
 
-tt2 = tt;
+    order = 5;
+    cutoff = 0.008;
+    [b,a] = butter(order, cutoff);
+    tt = filter(b,a,vol);
+ %   tt2 = sgolayfilt(vol,4, 311);
+   
+   % manually estimated shift
+   ls = 126;
+   tts = tt;
+   tts(1:end - ls) = tt(1+ls:end);
 
-% NOT NOW invalidate all the manualy invalid intervals, except first and last
-% tt2(mis(2:end-1)) = nan;
+    volr = vol - tts;
 
-% and its right neighbours - there is probably data error
-% the value rougly imitates breath length
-ngb = 40;
-for i = breakPos(1:end)
-  tt2(i: i+ngb) = nan;
-end
-% interpolate the nans by spline
-tt3 = interp1(X(~isnan(tt2)), tt2(~isnan(tt2)), X, 'spline');
+    flowr = [0; diff(volr)];
 
-% use the smooth curve to repair the vol
-volr = vol - tt3;
-% and reconstruct the flow
-flowr = [0, diff(volr)];
+    % reconstructed volume - just for check
+    
+    if (doPlot)
+        figure(102); 
+        clf;hold on;
+        plot(X, vol, 'b')
+        plot(X, tts, 'k', 'linewidth', 2)
 
-% reconstructed volume - just for check
-rvol = cumsum([0 diff(volr)]);
+        plot(X, flow2*50, 'b')
+        plot(X, flowr*50, 'r')
 
-if dbg
-  figure;
-  clf; hold on;
-  plot(X, vol)
-  plot(X, tt, 'k')
-  plot(X, tt3, 'k', 'Linewidth', 2);
-  plot(X(breakPos), tt3(breakPos), 'kx', 'Markersize', 14)
-
-  plot(X, flow*50, 'b')
-  plot(X, flowr*50, 'r')
-
-  plot(X, rvol, 'm')
-end
+        rvol = cumsum(flowr);
+        plot(X, rvol, 'g')
+        legend('volume', 'vol_fit','flow*50','flowr*50','volr')
+        title('Volume drift correction');
+    end;
+    
+%%% get spectrum
+%%    volf = vol(7000:17000);
+%    volf = volr(7000:17000);
+%    Fs = 100;
+%    L = length(volf);
+%    Y = fft(volf);
+%    P2 = abs(Y/L);
+%    P1 = P2(1:L/2+1);
+%    P1(2:end-1) = 2*P1(2:end-1);
+%    f = Fs*(0:(L/2))/L;
+%%    figure;
+%%    clf; hold on;
+%    plot(f,P1)     
+%    title('Single-Sided Amplitude Spectrum of X(t)')
+%xlabel('f (Hz)')
+%ylabel('|P1(f)|')
