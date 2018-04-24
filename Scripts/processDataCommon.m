@@ -7,8 +7,8 @@ clear all;
 %dir = 'c004-8S2000';
 %dir = 'c004-4m2000';
 %dir = 'c004-11m2000';
-%dir = 'c013-001m2000';
-dir = 'c013-12m2000';
+dir = 'c013-001m2000'; %hotovo
+%dir = 'c013-12m2000'; %hotovo
 
 %  allData(dir);
 inputData(dir,1);
