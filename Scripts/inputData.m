@@ -1,7 +1,7 @@
 function inputData(baseName,setImpDat)
   %read the dataInfo file:
   filePath = ['../Data/' baseName '/']
-  tuneFinished = 0;
+  tuneFinished = ~setImpDat;
   while (1)
     close all;
     di = readDataInfo(baseName);
