@@ -1,5 +1,5 @@
 function [x, data] = processOne(filePath, di, caseID, setImpData)
-fprintf(['Processing ' caseID '\n']);
+  fprintf(['Processing ' caseID '\n']);
   di1 = di.(caseID);
   %read the data from file:
   filepath = [filePath di1.file];
@@ -8,7 +8,9 @@ fprintf(['Processing ' caseID '\n']);
 
   % Repair flow data - either reconstruct from the pressure or filter the
   % existent flow data
-  data(:,di.W.columnFlow) = repairFlowData(data(:, di.W.columnFlow), data(:, di.W.columnPress),di.flowRepair, true);
+  if strcmp(caseID,'W')
+    data(:,di.W.columnFlow) = repairFlowData(data(:, di.W.columnFlow), data(:, di.W.columnPress),di.flowRepair, true);
+  end;
      
   %resample data, return new time grid as well. f1 .. original sample rate, f2 .. new sample rate.
   [x, data] = resampleX(data,di1.f,di.fTarget);
