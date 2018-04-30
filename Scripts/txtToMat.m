@@ -4,11 +4,14 @@ function [] = txtToMat(file)
     dataComplet = importdata([pathfile '.txt'],'\t',2);
     data = dataComplet.data;
     size(data);
+    n = size(data,1)
+    idx = 1:n;
     r = data(:,1);
     t = data(:,2);
     CO2 = data(:,3);
     O2 = data(:,4);
-    save('-v4',[pathfile '.mat'], 'r', 't', 'CO2', 'O2');
+    GRAD = [idx r t CO2 O2]
+    save('-v4',[pathfile '.mat'], 'GRAD');
     fig = figure;
     hold on;
     plot(r,CO2);
