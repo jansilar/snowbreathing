@@ -1,4 +1,7 @@
-function [x, data] = processOne(filePath, di, caseID, setImpData)
+function [x, data] = processOne(filePath, di, caseID, setImpData, plotGrad)
+  if nargin < 5
+      plotGrad = 0;
+  end
   fprintf(['Processing ' caseID '\n']);
   di1 = di.(caseID);
   %read the data from file:
@@ -32,6 +35,16 @@ function [x, data] = processOne(filePath, di, caseID, setImpData)
   %offset in time so that the zero time is when the snow come is connected
   x = doOffset(x,dif.tConnected, di.fTarget);
   
+  %plot the full data with gradient if demanded:
+  if plotGrad
+      dataG = importFile(filepath, di1.column);
+      [xG, dataG] = resampleX(dataG,di1.f,di.fTarget);
+      xG = doOffset(xG,dif.tConnected, di.fTarget);
+      figure();
+      plot(xG,dataG(:,di1.varI));
+      title('uncropped data');
+      legend(di1.varName(di1.varI));
+  end
   %repair flow data so that flow integral has constant tendency
 %  if (repairColumn > 0)
 %    toRepCol = data(:, repairColumn);

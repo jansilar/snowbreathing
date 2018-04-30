@@ -1,18 +1,22 @@
-function inputData(baseName,setImpDat)
+function inputData(baseName,setImpDat, plotGrad)
+  if nargin < 3
+      plotGrad = 0;
+  end
   %read the dataInfo file:
   filePath = ['../Data/' baseName '/']
   tuneFinished = ~setImpDat;
   while (1)
     close all;
     di = readDataInfo(baseName);
-    [xW, dataW] = processOne(filePath, di, 'W', setImpDat);
+    [xW, dataW] = processOne(filePath, di, 'W', setImpDat, plotGrad);
     [xWD, dataWD] = processOne(filePath, di, 'WD', setImpDat);
     xdata = mergeData({xW, xWD}, {dataW, dataWD});
     varNames = [di.W.varName, di.WD.varName]
     di.tDisconnected = di.W.tDisconnected - di.W.tConnected;
     figure;
     hold on;
-    plotData(xdata, varNames, [1, 2, 3, 6, 7], [1, 1, 1, 1, 1]);
+    toPlot = [di.W.varI di.WD.varI+size(di.W.column,2)];
+    plotData(xdata, varNames, toPlot, [1, 1, 1, 1, 1]);
     plot(di.tDisconnected,0,'k+');
     setImpDat = 0;
     if tuneFinished

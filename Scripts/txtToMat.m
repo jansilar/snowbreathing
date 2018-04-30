@@ -1,13 +1,21 @@
-function txtToMat(file)
-    data = importdata([file ".txt"],"\t",2).data;
+function [] = txtToMat(file)
+    pathfile = ['../Data/' file '/' file '_grad'];
+    fprintf(['opening ' pathfile '.txt\n']);
+    dataComplet = importdata([pathfile '.txt'],'\t',2);
+    data = dataComplet.data;
     size(data);
+    n = size(data,1)
+    idx = 1:n;
     r = data(:,1);
     t = data(:,2);
     CO2 = data(:,3);
     O2 = data(:,4);
-    save("-v4",[file ".mat"], "r", "t", "CO2", "O2");
-    figure;
+    GRAD = [idx r t CO2 O2]
+    save('-v4',[pathfile '.mat'], 'GRAD');
+    fig = figure;
     hold on;
     plot(r,CO2);
-    plot(r,O2, "r");
-    legend({"CO2", "O2"})
+    plot(r,O2, 'r');
+    legend({'CO2', 'O2'})
+    saveas(fig,[pathfile '.png']);
+end
