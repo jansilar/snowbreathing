@@ -1,11 +1,9 @@
 within SnowBreathing.Models;
 
 model c013_12s2000_snow
-  SnowBreathing.Components.ConeCompGrad coneCompGrad(useCO2Solubility = true)  annotation(
+  SnowBreathing.Components.ConeCompGrad coneCompGrad(caseID = "c013-12s2000", useCO2Solubility = true)  annotation(
     Placement(visible = true, transformation(origin = {10, -6}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  Modelica.Blocks.Tables.CombiTable1D combiTable1D1 annotation(
-    Placement(visible = true, transformation(origin = {-66, 48}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  Components.ExperimentalData data(caseID = "c013_12s2000")  annotation(
+  Components.ExperimentalData data(caseID = "c013-12s2000")  annotation(
     Placement(visible = true, transformation(origin = {-54, -6}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
 equation
   connect(data.fluxConcCO2O2, coneCompGrad.fluxConcB) annotation(
