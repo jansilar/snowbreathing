@@ -42,11 +42,11 @@ function di = c013_12s2000_data_info()
 	% repair the flow - if the pc exist,then the rest is not required and vice versa
 	%di.flowRepair.pc = [NaN NaN];
 	% points and spans to be invalidated
-	%di.flowRepair.manuallyInvalidated = [];
+	di.flowRepair.manuallyInvalidated = [];
 	% set of "bad readings" - these values are discarded
-	%di.flowRepair.invalidReading = [];
+	di.flowRepair.invalidReading = [-0.1, -0.2, -0.2];
 	% when the diffbounds are empty, the saturation correction is skipped
 	% [min, max, maxwidth] - min peak of diff, max peak of diff and maximal width of sat
-	%di.flowRepair.diffBounds = [];	
+	di.flowRepair.diffBounds = [-90, 40, 40];
 end
 
