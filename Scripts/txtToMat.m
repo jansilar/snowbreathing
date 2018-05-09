@@ -1,7 +1,7 @@
 function [] = txtToMat(file)
     pathfile = ['../Data/' file '/' file '_grad'];
     fprintf(['opening ' pathfile '.txt\n']);
-    dataComplet = importdata([pathfile '.txt'],'\t',2)
+    dataComplet = importdata([pathfile '.txt'],'\t',1)
     data = dataComplet.data;
     size(data);
     n = size(data,1)
