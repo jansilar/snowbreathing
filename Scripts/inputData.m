@@ -1,21 +1,25 @@
-function inputData(baseName,setImpDat, plotGrad)
+function inputData(baseName,setImpDat, plotGrad, plotRepairFlow)
   if nargin < 3
       plotGrad = 0;
   end
+  if nargin < 4
+      plotRepairFlow = 0;
+  end
+
   %read the dataInfo file:
   filePath = ['../Data/' baseName '/']
   tuneFinished = ~setImpDat;
   while (1)
     close all;
     di = readDataInfo(baseName);
-    [xW, dataW] = processOne(filePath, di, 'W', setImpDat, plotGrad);
+    [xW, dataW] = processOne(filePath, di, 'W', setImpDat, plotGrad,plotRepairFlow);
     [xWD, dataWD] = processOne(filePath, di, 'WD', setImpDat);
     xdata = mergeData({xW, xWD}, {dataW, dataWD});
     varNames = [di.W.varName, di.WD.varName]
     di.tDisconnected = di.W.tDisconnected - di.W.tConnected;
     figure;
     hold on;
-    toPlot = [di.W.varI di.WD.varI+size(di.W.column,2)];
+    toPlot = [di.W.varI di.WD.varI+size(di.W.column,2)]
     plotData(xdata, varNames, toPlot, [1, 1, 1, 1, 1]);
     plot(di.tDisconnected,0,'k+');
     setImpDat = 0;
@@ -29,9 +33,13 @@ function inputData(baseName,setImpDat, plotGrad)
         tuneFinished = 1;
     end;
   end;
-  CO2O2_25 = xdata(:,[1,7,8]);
+  CO2O2_25 = xdata(:,[1,di.WD.varI+size(di.W.column,2)+1]);
+  [1,di.WD.varI+size(di.W.column,2)]
 %  CO2O2 = avgDownsample(CO2O2_100, 20);
   CO2O2 = CO2O2_25;
+  figure;
+  plot(CO2O2(:,1),CO2O2(:,3))
+  error('Šmitec')
   save('-v4',[filePath 'CO2O2.mat'], 'CO2O2')  
   Flow_25 = xdata(:,[1,5]);
   Flow = Flow_25;

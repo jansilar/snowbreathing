@@ -15,8 +15,8 @@ function [] = txtToMat(file)
     save('-v4',[pathfile '.mat'], 'GRAD');
     fig = figure;
     hold on;
-    plot(r,CO2);
-    plot(r,O2, 'r');
+    plot(r,CO2,'+');
+    plot(r,O2, 'r+');
     legend({'CO2', 'O2'})
     saveas(fig,[pathfile '.png']);
 end

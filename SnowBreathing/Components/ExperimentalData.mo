@@ -1,10 +1,10 @@
 within SnowBreathing.Components;
 model ExperimentalData
   extends Modelica.Icons.Record;
-  Modelica.Blocks.Sources.CombiTimeTable combiTimeTableCO2O2(columns = 2:3, fileName = fileCO2O2, tableName = "CO2O2", tableOnFile = true)
+  Modelica.Blocks.Sources.CombiTimeTable combiTimeTableCO2O2(columns = 2:3, extrapolation = Modelica.Blocks.Types.Extrapolation.HoldLastPoint, fileName = fileCO2O2, tableName = "CO2O2", tableOnFile = true)
    annotation(
     Placement(visible = true, transformation(origin = {-42, 36}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  Modelica.Blocks.Sources.CombiTimeTable combiTimeTableFlow(columns = 2:2, fileName = fileFlow, tableName = "Flow", tableOnFile = true)
+  Modelica.Blocks.Sources.CombiTimeTable combiTimeTableFlow(columns = 2:2, extrapolation = Modelica.Blocks.Types.Extrapolation.HoldLastPoint, fileName = fileFlow, tableName = "Flow", tableOnFile = true)
    annotation(
     Placement(visible = true, transformation(origin = {-42, -6}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   Connectors.FluxConcCO2O2 fluxConcCO2O2 annotation(
