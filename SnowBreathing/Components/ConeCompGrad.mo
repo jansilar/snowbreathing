@@ -13,38 +13,56 @@ model ConeCompGrad
   Real tGT;
   discrete Real tGTOld;
   discrete Real  rGT[NRows], CO2GT[NRows], O2GT[NRows];   //gradient table values
-//  discrete Real  CO2GM[NRows];   /*, O2GM[NRows]*/
+  discrete Real  CO2GM[NRows], O2GM[NRows];
   //gradient model values
   discrete Integer ix;
 //  discrete Real  CO2GD[NRows], O2GD[NRows]; //gradient table-model differences
   discrete Integer i;
+  discrete Real rGTCenter;
 initial algorithm
   CO2GT:= zeros(NRows);
   rGT:= zeros(NRows);
+  rGTCenter := 0;
 //  CO2GM:= zeros(NRows);
   tGTOld := table.y[1];
   i := 1"gradient sample index";
-  ix := 1 "index in for model data"; 
+  ix := 1 "index in for model data";
 equation
   tGT = table.y[1];
 algorithm
   when tGT > pre(tGTOld) then //table time has changed, time of new grad measurement reached
     tGTOld := tGT;
+    rGTCenter := table.y[2] + R_in;
     rGT[pre(i)] := table.y[2];
     CO2GT[pre(i)] := table.y[3];
     O2GT[pre(i)] := table.y[4];
 //    Modelica.Utilities.Streams.print("t = " + String(time) + "\n r = " + String(rGT[pre(i)]) + "\n");
 //    ix := 1;
-    while omega.x[ix] < rGT[pre(i)] + R_in loop
+    while omega.x[ix] < rGTCenter loop
       ix := ix + 1;
 //      Modelica.Utilities.Streams.print("omega.x[ix] = " + String(omega.x[ix]) + "\n");
     end while;
-    if ix > 1 then
-      Modelica.Utilities.Streams.print("ix = " + String(ix) + "omega.x[ix] - R_in = " + String(omega.x[ix] - R_in) + "omega.x[ix-1] - R_in = " + String(omega.x[ix-1] - R_in) + "rGT = " + String(rGT[pre(i)]) + "\n ---------\n");
+//    if ix > 1 then
+//      Modelica.Utilities.Streams.print("ix = " + String(ix) + "omega.x[ix] - R_in = " + String(omega.x[ix] - R_in) + "omega.x[ix-1] - R_in = " + String(omega.x[ix-1] - R_in) + "rGT = " + String(rGT[pre(i)]) + "\n ---------\n");
+//    else
+//      Modelica.Utilities.Streams.print("ix = " + String(ix) + "omega.x[ix] - R_in = " + String(omega.x[ix] - R_in) + "rGT = " + String(rGT[pre(i)]) + "\n ---------\n");
+//    end if;
+    if (ix > 1) then
+        CO2GM[i] := CO2[ix-1] + (CO2[ix] - CO2[ix-1])/omega.dx *(rGTCenter - omega.x[ix-1]);
+        O2GM[i] := O2[ix-1] + (O2[ix] - O2[ix-1])/omega.dx *(rGTCenter - omega.x[ix-1]);
+        Modelica.Utilities.Streams.print("ix = " + String(ix) + "\n");
+        Modelica.Utilities.Streams.print("CO2[ix-1] = " + String(CO2[ix-1]) + "\n");
+        Modelica.Utilities.Streams.print("CO2[ix] = " + String(CO2[ix]) + "\n");
+        Modelica.Utilities.Streams.print("omega.dx = " + String(omega.dx) + "\n");
+        Modelica.Utilities.Streams.print("rGTCenter = " + String(rGTCenter) + "\n");
+        Modelica.Utilities.Streams.print("omega.x[ix-1] = " + String(omega.x[ix-1]) + "\n");
+        Modelica.Utilities.Streams.print("CO2GM[i] = " + String(CO2GM[i]) + "\n");
+        Modelica.Utilities.Streams.print("------------------\n");
     else
-      Modelica.Utilities.Streams.print("ix = " + String(ix) + "omega.x[ix] - R_in = " + String(omega.x[ix] - R_in) + "rGT = " + String(rGT[pre(i)]) + "\n ---------\n");
+      CO2GM[i] := CO2[ix];
+      O2GM[i] := O2[ix];
     end if;
-//    CO2GM[i] := CO2[ix-1];// + (CO2[ix] - CO2[ix-1])/omega.dx *(r - omega.x[ix-1]);
+    
     i := pre(i) + 1;
   end when;
 
