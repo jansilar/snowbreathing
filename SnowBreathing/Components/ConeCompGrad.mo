@@ -16,6 +16,7 @@ model ConeCompGrad
   discrete Integer i "gradient sample index";
   discrete Real rGTCenter "distance of gradient sample from center of cavity/cone";
   discrete Real RMSCO2, RMSO2 "CO2/O2 rms error";
+  Real CO2OutSum(start = 0, fixed=true), O2OutSum(start = 0, fixed=true);
 initial algorithm
   CO2GT:= zeros(NRows);
   rGT:= zeros(NRows);
@@ -25,6 +26,13 @@ initial algorithm
   ix := 1;
 equation
   tGT = table.y[1];
+  if exhaleL then
+    der(CO2OutSum) = 0;
+    der(O2OutSum) = 0;
+  else
+    der(CO2OutSum) = -q*fluxConcB.CO2;
+    der(O2OutSum) = -q*fluxConcB.O2;
+  end if;
 algorithm
   when tGT > pre(tGTOld) then //table time has changed, time of new grad measurement reached
     tGTOld := tGT;

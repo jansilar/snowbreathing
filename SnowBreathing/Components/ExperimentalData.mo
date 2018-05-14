@@ -14,10 +14,23 @@ model ExperimentalData
   Real O2_act;
   parameter String fileCO2O2 = "Data/" + caseID + "/CO2O2.mat"; //Modelica.Utilities.Files.loadResource("modelica://../Data/" + caseID + "/CO2O2.mat");
   parameter String fileFlow = "Data/" + caseID + "/Flow.mat"; //Modelica.Utilities.Files.loadResource("modelica://../Data/" + caseID + "/Flow.mat");
+  Real CO2OutSum(start = 0, fixed=true), O2OutSum(start = 0, fixed=true) "volume of CO2 and O2 that left the component";
+  Real CO2InExpSum(start = 0, fixed=true), O2InExpSum(start = 0, fixed=true) "volume of CO2 and O2 that entered the component according to experimental data";
 equation
   combiTimeTableCO2O2.y[1]/100 = fluxConcCO2O2.CO2; //percent to fraction
   combiTimeTableCO2O2.y[2]/100 = fluxConcCO2O2.O2;  //percent to fraction
   combiTimeTableFlow.y[1]/60000 = fluxConcCO2O2.q;  //units in table are l/min, we use m3/s
   CO2_act = actualStream(fluxConcCO2O2.CO2);
   O2_act = actualStream(fluxConcCO2O2.O2);
+  if fluxConcCO2O2.q>0 then
+    der(CO2OutSum) = 0;
+    der(O2OutSum) = 0;
+    der(CO2InExpSum) = fluxConcCO2O2.q*combiTimeTableCO2O2.y[1]/100;
+    der(O2InExpSum)  = fluxConcCO2O2.q*combiTimeTableCO2O2.y[2]/100;
+  else
+    der(CO2OutSum) = fluxConcCO2O2.q*fluxConcCO2O2.CO2;
+    der(O2OutSum) = fluxConcCO2O2.q*fluxConcCO2O2.O2;
+    der(CO2InExpSum) = 0;
+    der(O2InExpSum) = 0;
+  end if;
 end ExperimentalData;
