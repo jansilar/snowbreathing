@@ -54,7 +54,8 @@ dataset(length(dataset) + 1) = datafile;
 
 datafile.name = 'c013-12s2000';
 % wrong pressure data
-datafile.range = (14017:14557);
+datafile.range = (15230:15694);
+% datafile.range = (14017:14557);
 % datafile.range = {12566:12895};
 datafile.PressFlowPos = [4 5];
 dataset(length(dataset) + 1) = datafile;
@@ -98,7 +99,7 @@ for i = 1:length(dataset)
     file = ['../Data/' df.name '/waves-' df.name '.txt'];
     raw_read = importdata(file,'\t',2);
     data = raw_read.data;
-%   co2 = data(:, 1).';
+   co2 = data(:, 1).';
 %   o2 = data(:, 2).';
     press = data(:, df.PressFlowPos(1));  
     flow = data(:, df.PressFlowPos(2));
@@ -114,6 +115,7 @@ for i = 1:length(dataset)
     % first iteration - remove invalid readings
     flow2 = filterFlowData(flow, flowRepair, doPlot);
     if doPlot
+        plot(press*10, 'm');
         title([df.name ': fitted segment']);
         axis([df.range(1), df.range(end), -150, 150]);
     end

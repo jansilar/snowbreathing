@@ -40,6 +40,9 @@ if ~isempty(diffBounds)
     s1 = flowvdif < diffBounds(1);
     s2 = [s1(1:end-1) & ~(s1(2:end)); true];
     for i = 1:N-diffBounds(3) -1;
+%         if i > 17958
+%             disp('ha!');
+%         end
       if s2(i)
         for j = i:i+diffBounds(3)
           if flowvdif(j) > diffBounds(2)
@@ -91,10 +94,12 @@ if (dbg)
   % saturation only - X
   plot(X(~sat & flowvalid), repairedFlow(~sat & flowvalid), 'rx', 'markersize', ms);
   
+  
+  plot(X, vol, 'k');
+  
   % manual exclusion - point - would overlap with sat
   plot(X(invalidFlowData), repairedFlow(invalidFlowData), 'r.', 'markersize', ms);
   
-  plot(X, vol, 'k');
   plot(X(invalidFlowData), vol(invalidFlowData), 'r.', 'markersize', ms);
   legend('original Q', 'repaired Q','d Q / dx', 'invalid reading', ...
       'sat', 'manual inv', 'volume', 'manual inv')

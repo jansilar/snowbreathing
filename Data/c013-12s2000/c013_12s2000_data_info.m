@@ -40,13 +40,15 @@ function di = c013_12s2000_data_info()
     di.W.tDisconnected = 729.04;
 	
 	% repair the flow - if the pc exist,then the rest is not required and vice versa
-	%di.flowRepair.pc = [NaN NaN];
+	% this dataset has problems with flow reconstruction in the beggining (11k - 12k), then it seems legit. 
+	% Also, the flow is slightly shifted from the pressure, therefore some segments show poor fit
+	di.flowRepair.pc = [30.6831 0.5275];
 	% points and spans to be invalidated
 	di.flowRepair.manuallyInvalidated = [];
 	% set of "bad readings" - these values are discarded
 	di.flowRepair.invalidReading = [-0.1, -0.2, -0.2];
 	% when the diffbounds are empty, the saturation correction is skipped
 	% [min, max, maxwidth] - min peak of diff, max peak of diff and maximal width of sat
-	di.flowRepair.diffBounds = [-90, 40, 40];
+	di.flowRepair.diffBounds = [-90, 30, 40];
 end
 

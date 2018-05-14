@@ -39,7 +39,7 @@ function inputData(baseName,setImpDat, plotGrad, plotRepairFlow)
   CO2O2 = CO2O2_25;
   figure;
   plot(CO2O2(:,1),CO2O2(:,3))
-  error('Šmitec')
+%   error('Šmitec')
   save('-v4',[filePath 'CO2O2.mat'], 'CO2O2')  
   Flow_25 = xdata(:,[1,5]);
   Flow = Flow_25;

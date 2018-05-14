@@ -13,5 +13,5 @@ dir = 'c013-12s2000'; %hotovo i grad
 %  allData(dir);
 setupFile = 0;
 plotGrad = 0;
-plotRepairFlow = 0;
+plotRepairFlow = 1;
 inputData(dir,setupFile,plotGrad,plotRepairFlow);
