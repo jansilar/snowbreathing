@@ -4,29 +4,25 @@ model ConeCompGrad
   extends SnowBreathing.Components.Cone;
   Modelica.Blocks.Sources.CombiTimeTable table(columns = 1:4, extrapolation = Modelica.Blocks.Types.Extrapolation.HoldLastPoint, fileName = fileGrad, smoothness = Modelica.Blocks.Types.Smoothness.ConstantSegments, tableName = "GRAD", tableOnFile = true)  annotation(
     Placement(visible = true, transformation(origin = {-56, 4}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  parameter String caseID;
+  parameter String caseID "e.g. c013-12s2000";
   parameter String fileGrad = "Data/" + caseID + "/" + caseID + "_grad.mat";
-
-  constant Integer NRows = 13;
-//  Real r;
-//  discrete Real rOld;
-  Real tGT;
-  discrete Real tGTOld;
+  constant Integer NRows = 13 "number of gradient samples";
+  Real tGT;   //gradient table mesurement time
+  discrete Real tGTOld; //gradient table mesurement old time - pre does not work on continuous
   discrete Real  rGT[NRows], CO2GT[NRows], O2GT[NRows];   //gradient table values
-  discrete Real  CO2GM[NRows], O2GM[NRows];
-  //gradient model values
-  discrete Integer ix;
-//  discrete Real  CO2GD[NRows], O2GD[NRows]; //gradient table-model differences
-  discrete Integer i;
-  discrete Real rGTCenter;
+  discrete Real  CO2GM[NRows], O2GM[NRows];               //gradient model values
+  discrete Integer ix "index in for model data";
+  discrete Real  CO2GD[NRows], O2GD[NRows]; //gradient table-model differences
+  discrete Integer i "gradient sample index";
+  discrete Real rGTCenter "distance of gradient sample from center of cavity/cone";
+  discrete Real RMSCO2, RMSO2 "CO2/O2 rms error";
 initial algorithm
   CO2GT:= zeros(NRows);
   rGT:= zeros(NRows);
   rGTCenter := 0;
-//  CO2GM:= zeros(NRows);
   tGTOld := table.y[1];
-  i := 1"gradient sample index";
-  ix := 1 "index in for model data";
+  i := 1;
+  ix := 1;
 equation
   tGT = table.y[1];
 algorithm
@@ -34,35 +30,22 @@ algorithm
     tGTOld := tGT;
     rGTCenter := table.y[2] + R_in;
     rGT[pre(i)] := table.y[2];
-    CO2GT[pre(i)] := table.y[3];
-    O2GT[pre(i)] := table.y[4];
-//    Modelica.Utilities.Streams.print("t = " + String(time) + "\n r = " + String(rGT[pre(i)]) + "\n");
-//    ix := 1;
+    CO2GT[pre(i)] := table.y[3]/100;
+    O2GT[pre(i)] := table.y[4]/100;
     while omega.x[ix] < rGTCenter loop
       ix := ix + 1;
-//      Modelica.Utilities.Streams.print("omega.x[ix] = " + String(omega.x[ix]) + "\n");
     end while;
-//    if ix > 1 then
-//      Modelica.Utilities.Streams.print("ix = " + String(ix) + "omega.x[ix] - R_in = " + String(omega.x[ix] - R_in) + "omega.x[ix-1] - R_in = " + String(omega.x[ix-1] - R_in) + "rGT = " + String(rGT[pre(i)]) + "\n ---------\n");
-//    else
-//      Modelica.Utilities.Streams.print("ix = " + String(ix) + "omega.x[ix] - R_in = " + String(omega.x[ix] - R_in) + "rGT = " + String(rGT[pre(i)]) + "\n ---------\n");
-//    end if;
     if (ix > 1) then
         CO2GM[i] := CO2[ix-1] + (CO2[ix] - CO2[ix-1])/omega.dx *(rGTCenter - omega.x[ix-1]);
         O2GM[i] := O2[ix-1] + (O2[ix] - O2[ix-1])/omega.dx *(rGTCenter - omega.x[ix-1]);
-        Modelica.Utilities.Streams.print("ix = " + String(ix) + "\n");
-        Modelica.Utilities.Streams.print("CO2[ix-1] = " + String(CO2[ix-1]) + "\n");
-        Modelica.Utilities.Streams.print("CO2[ix] = " + String(CO2[ix]) + "\n");
-        Modelica.Utilities.Streams.print("omega.dx = " + String(omega.dx) + "\n");
-        Modelica.Utilities.Streams.print("rGTCenter = " + String(rGTCenter) + "\n");
-        Modelica.Utilities.Streams.print("omega.x[ix-1] = " + String(omega.x[ix-1]) + "\n");
-        Modelica.Utilities.Streams.print("CO2GM[i] = " + String(CO2GM[i]) + "\n");
-        Modelica.Utilities.Streams.print("------------------\n");
     else
       CO2GM[i] := CO2[ix];
-      O2GM[i] := O2[ix];
+      O2GM[i]  := O2[ix];
     end if;
-    
+    CO2GD[i] := CO2GM[i] - CO2GT[i];
+    O2GD[i]  := O2GM[i]  - O2GT[i];
+    RMSCO2   := RMSCO2   + CO2GD[i]^2;
+    RMSO2    := RMSO2    + O2GD[i]^2;
     i := pre(i) + 1;
   end when;
 

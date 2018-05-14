@@ -3,3 +3,13 @@ Discretized
 /Models/Pneuma
 /Models/farkabar_vildmjir
 /Models/hlavnjan_krivoond
+*.c
+*.h
+*.o
+*.json
+*.makefile
+*.xml
+*.intdata
+*.realdata
+*~
+*.old
