@@ -38,6 +38,10 @@ function [x, data] = processOne(filePath, di, caseID, setImpData, plotGrad, plot
 
   %offset in time so that the zero time is when the snow come is connected
   x = doOffset(x,dif.tConnected, di.fTarget);
+  if (isfield(di1, 'scale'))
+    di1.scale
+    data = scaleData(di1.scale, data);
+  end;
   
   %plot the full data with gradient if demanded:
   if plotGrad

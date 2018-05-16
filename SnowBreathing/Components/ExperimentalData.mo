@@ -19,7 +19,7 @@ model ExperimentalData
 equation
   combiTimeTableCO2O2.y[1]/100 = fluxConcCO2O2.CO2; //percent to fraction
   combiTimeTableCO2O2.y[2]/100 = fluxConcCO2O2.O2;  //percent to fraction
-  combiTimeTableFlow.y[1]/60000 = fluxConcCO2O2.q;  //units in table are l/min, we use m3/s
+  - combiTimeTableFlow.y[1]/60000 = fluxConcCO2O2.q;  //units in table are l/min, we use m3/s
   CO2_act = actualStream(fluxConcCO2O2.CO2);
   O2_act = actualStream(fluxConcCO2O2.O2);
   if fluxConcCO2O2.q>0 then
@@ -28,7 +28,7 @@ equation
     der(CO2InExpSum) = fluxConcCO2O2.q*combiTimeTableCO2O2.y[1]/100;
     der(O2InExpSum)  = fluxConcCO2O2.q*combiTimeTableCO2O2.y[2]/100;
   else
-    der(CO2OutSum) = fluxConcCO2O2.q*fluxConcCO2O2.CO2;
+    der(CO2OutSum) = - fluxConcCO2O2.q*fluxConcCO2O2.CO2;
     der(O2OutSum) = fluxConcCO2O2.q*fluxConcCO2O2.O2;
     der(CO2InExpSum) = 0;
     der(O2InExpSum) = 0;

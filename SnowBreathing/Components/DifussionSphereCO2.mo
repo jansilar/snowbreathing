@@ -48,7 +48,7 @@ equation
   der(CO2) * (1 + solubilityCoeff) + (q / (facA * omega.x ^ 2) / SnowVolFrac - 2 * D_CO2 / omega.x) * pder(CO2, x) - D_CO2 * pder(CO2, x, x) = 0 indomain omega "the advection-diffusion equation with CO2 solubility";
   CO2_sol = CO2*solubilityCoeff;
   q = fluxConcB.q;
-  exhaleL = q >= 0;
+  exhaleL = q > -1.0e-8;
   exhaleR = q > 1.0e-8;
 //CavityCO2-snow
   CO2 = if exhaleL then inStream(fluxConcB.CO2) else extrapolateField(CO2) indomain omega.left "left BC duringexhalation, extrapolation during inhalation";

@@ -5,9 +5,8 @@ function inputData(baseName,setImpDat, plotGrad, plotRepairFlow)
   if nargin < 4
       plotRepairFlow = 0;
   end
-
   %read the dataInfo file:
-  filePath = ['../Data/' baseName '/']
+  filePath = ['../Data/' baseName '/'];
   tuneFinished = ~setImpDat;
   while (1)
     close all;

@@ -29,16 +29,18 @@ function di = c013_12s2000_data_info()
     di.fTarget = 25;
 
     %crop times for simulation input data
-    di.W.crop = [142 856.5];
-    di.WD.crop = [0 950];
+    di.W.crop = [142 1000];%856.5];
+    di.WD.crop = [0 1000];%950];
 
     %time when cone was connected
     di.W.tConnected = 439;
-    di.WD.tConnected = 387-3.7;%-2.7-1.4 + 0.5 + 3.52;
+    di.WD.tConnected = 387-3.7 + 3;%-2.7-1.4 + 0.5 + 3.52;
 
     %time when the cone was disconnected:
     di.W.tDisconnected = 729.04;
 	
+    %[baselineCO2 scalefactorCO2 baselineO2 scalefactorO2]
+    di.WD.scale = [0 1.68 20.83 1.8];
 	% repair the flow - if the pc exist,then the rest is not required and vice versa
 	% this dataset has problems with flow reconstruction in the beggining (11k - 12k), then it seems legit. 
 	% Also, the flow is slightly shifted from the pressure, therefore some segments show poor fit
