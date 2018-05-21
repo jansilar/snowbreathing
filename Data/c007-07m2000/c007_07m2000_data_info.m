@@ -1,9 +1,9 @@
-function di = sablona_data_info()
-% SAMPLE DATAINFO
-% e.g. c004_3m0200_data_info - mind the underscore!!
+function di = c007_07m2000_data_info()
+%% FUJ DATA - je to vubec pouzitelne?
+
 
     %file names:
-    di.baseName = 'c013-001m2000';
+    di.baseName = 'c007-07m2000';
     di.W.file = ['waves-' di.baseName '.txt'];
     di.WD.file = ['dutina-waves-' di.baseName '.txt'];
 
@@ -14,7 +14,7 @@ function di = sablona_data_info()
     %column indexes with variables of interest:
     %columnT = [1 30];
     %columnTD = [1 30];
-    di.W.column = [1 2 4 5 6];
+    di.W.column = [1 2 3 4 5];
     di.WD.column = [2:3];
 
     %columns to plot:

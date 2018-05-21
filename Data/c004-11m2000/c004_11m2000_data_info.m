@@ -1,9 +1,8 @@
-function di = sablona_data_info()
+function di = c004_11m2000_data_info()
 % SAMPLE DATAINFO
-% e.g. c004_3m0200_data_info - mind the underscore!!
 
     %file names:
-    di.baseName = 'c013-001m2000';
+    di.baseName = 'c004-11m2000';
     di.W.file = ['waves-' di.baseName '.txt'];
     di.WD.file = ['dutina-waves-' di.baseName '.txt'];
 
@@ -14,7 +13,7 @@ function di = sablona_data_info()
     %column indexes with variables of interest:
     %columnT = [1 30];
     %columnTD = [1 30];
-    di.W.column = [1 2 4 5 6];
+    di.W.column = [1 2 3 4 5];
     di.WD.column = [2:3];
 
     %columns to plot:
@@ -41,7 +40,7 @@ function di = sablona_data_info()
     di.W.tDisconnected = NaN;
 	
 	% repair the flow - if the pc exist,then the rest is not required and vice versa
-	di.flowRepair.pc = [NaN NaN];
+	di.flowRepair.pc = [41.9025 0.4441];
 	% points and spans to be invalidated
 	di.flowRepair.manuallyInvalidated = [];
 	% set of "bad readings" - these values are discarded

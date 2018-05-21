@@ -2,7 +2,7 @@ function flowrfpnorm = repairFlowData(flow, press, flowRepair, doPlot)
 % reconstructs the flow from the pressure if the flowrepair.pc contains 
 % the parameters pc or just repair the flow
 
-    flowrfp = zeros(size(press));
+    flowrfp = zeros(size(flow));
     % reconstruct raw flow - both pos and neg sides
     if isfield(flowRepair, 'pc') && all(~isnan(flowRepair.pc))
         disp('Reconstructing from the pressure...');

@@ -1,9 +1,7 @@
-function di = sablona_data_info()
-% SAMPLE DATAINFO
-% e.g. c004_3m0200_data_info - mind the underscore!!
+function di = c004_8S2000_data_info()
 
     %file names:
-    di.baseName = 'c013-001m2000';
+    di.baseName = 'c004-8S2000';
     di.W.file = ['waves-' di.baseName '.txt'];
     di.WD.file = ['dutina-waves-' di.baseName '.txt'];
 
@@ -14,7 +12,7 @@ function di = sablona_data_info()
     %column indexes with variables of interest:
     %columnT = [1 30];
     %columnTD = [1 30];
-    di.W.column = [1 2 4 5 6];
+    di.W.column = [1 2 3 4 5];
     di.WD.column = [2:3];
 
     %columns to plot:
@@ -41,13 +39,13 @@ function di = sablona_data_info()
     di.W.tDisconnected = NaN;
 	
 	% repair the flow - if the pc exist,then the rest is not required and vice versa
-	di.flowRepair.pc = [NaN NaN];
+	di.flowRepair.pc = [21.9101 0.66882];
 	% points and spans to be invalidated
 	di.flowRepair.manuallyInvalidated = [];
 	% set of "bad readings" - these values are discarded
 	di.flowRepair.invalidReading = [-0.1, -0.2, -0.2];
 	% when the diffbounds are empty, the saturation correction is skipped
 	% [min, max, maxwidth] - min peak of diff, max peak of diff and maximal width of sat
-	di.flowRepair.diffBounds = [-90, 40, 30];
+	% di.flowRepair.diffBounds = [-90, 40, 30];
 end
 
