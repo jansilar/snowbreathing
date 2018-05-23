@@ -2,6 +2,7 @@
 clear;
 close all;
 doPlot = true;
+i = 1;
 
 datafile.name = 'c004-3m0200';
 datafile.range = (11106:11712);
@@ -19,7 +20,8 @@ datafile.PressFlowPos = [3 4];
 dataset(length(dataset) + 1) = datafile;
 
 datafile.name = 'c004-11m2000';
-datafile.range = (18130:18782);
+% datafile.range = (14054:14494);
+datafile.range = (12537:12834);
 datafile.PressFlowPos = [3 4];
 dataset(length(dataset) + 1) = datafile;
 
@@ -117,7 +119,8 @@ for i = 1:length(dataset)
     if doPlot
         plot(press*10, 'm');
         title([df.name ': fitted segment']);
-        axis([df.range(1), df.range(end), -150, 150]);
+%          axis([df.range(1), df.range(end), -150, 150]);
+         axis([0, length(flow), -150, 150]);
     end
     % second iteration - normalize the volume drift
     flow3 = adjustVolumeTrend(flow2, doPlot);
@@ -162,7 +165,7 @@ pc
 % c004-3m0200:  a = 8.3092; b = 0.75299; rms = 0.66241;
 % c004-4m2000:  a = 23.9068; b = 0.62385; rms = 0.9447;
 % c004-8S2000:  a = 21.9101; b = 0.66882; rms = 0.93157;
-% c004-11m2000:  a = 41.9025; b = 0.44409; rms = 0.76705;
+% c004-11m2000:  a = 41.9025; b = 0.44409; rms = 0.76705; //41.9025 0.4441
 % c007-01m2000:  a = NaN; b = NaN; rms = ;
 % c007-07m2000:  a = NaN; b = NaN; rms = ;
 % c007-08s2000:  a = 26.5324; b = 0.58096; rms = 0.9169;

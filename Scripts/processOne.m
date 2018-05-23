@@ -16,7 +16,10 @@ function [x, data] = processOne(filePath, di, caseID, setImpData, plotGrad, plot
   % Repair flow data - either reconstruct from the pressure or filter the
   % existent flow data
   if strcmp(caseID,'W')
-    data(:,di.W.columnFlow) = repairFlowData(data(:, di.W.columnFlow), data(:, di.W.columnPress),di.flowRepair, plotRepairFlow);
+      if di.W.columnPress > 0
+        data(:,di.W.columnFlow) = repairFlowData(data(:, di.W.columnFlow), data(:, di.W.columnPress),di.flowRepair, plotRepairFlow);
+      else
+        data(:,di.W.columnFlow) = repairFlowData(data(:, di.W.columnFlow), [],di.flowRepair, plotRepairFlow);
   end;
      
   %resample data, return new time grid as well. f1 .. original sample rate, f2 .. new sample rate.
