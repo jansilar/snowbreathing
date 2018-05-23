@@ -5,7 +5,7 @@ model DifussionSphereCO2
   constant Real facA(unit = "1/m2") = 2 * pi * (1 - cos(theta)) "facA*r^2 = cone outside surface area";
   parameter Boolean useCO2Solubility = false;
   //old variant: 1 + MmCO2 / rho_CO2 * kH * P * wc
-  Real solubilityCoeff(unit = "1") = if useCO2Solubility then VmolCO2 * kH * P * wc / (1-SnowVolFrac)  else 0;
+  Real solubilityCoeff(unit = "1") = if useCO2Solubility then VmolCO2 * kH * P * wc / (1 - SnowVolFrac) else 0;
   parameter Real VmolCO2(unit = "m3/mol") = 22.263e-3;
   parameter Real rho_water(unit = "kg/m3") = 1000;
   //Snow
@@ -19,10 +19,10 @@ model DifussionSphereCO2
   parameter Real D_CO2 = 3e-5 "coefficient of CO2 diffusion in snow [m2/s]";
   parameter Real CO2_out = 0 "CO2 concentration out of the sphere";
   parameter Real CO2_init = 0 "initial CO2 concentartion";
-  constant Real V_cavity (unit = "m3")= 0.002 "cavity volume";
-  constant Real R_in(unit="m") = (V_cavity*3/facA)^(1/3);
+  constant Real V_cavity(unit = "m3") = 0.002 "cavity volume";
+  constant Real R_in(unit = "m") = (V_cavity * 3 / facA) ^ (1 / 3);
   constant Real R_out(unit = "m") = 1;
-  constant Integer NNodes = integer((R_out - R_in)*100) + 1 "so that each cell is 1cm";
+  constant Integer NNodes = integer((R_out - R_in) * 200) + 1 "so that each cell is 1cm";
   parameter Real rho_CO2(unit = "kg/m3") = 1.977 "kg/m3 (gas at 1 atm and 0 degC)";
   parameter Real rho_air(unit = "kg/m3") = 1.2922 "kg/m3 (gas at 1 atm and 0 degC)";
   //henrys constant: kH0 = kH25* exp(2400 *((1/T0) - 1/(T25))); https://webbook.nist.gov/cgi/cbook.cgi?ID=C124389&Mask=10
@@ -46,9 +46,9 @@ equation
 //    cCO2H2O = kH * PCO2 indomain omega "Henrys law, concentration in mol/kg";
 //    CO2Snow = MmCO2 * cCO2H2O * wc indomain omega;
   der(CO2) * (1 + solubilityCoeff) + (q / (facA * omega.x ^ 2) / SnowVolFrac - 2 * D_CO2 / omega.x) * pder(CO2, x) - D_CO2 * pder(CO2, x, x) = 0 indomain omega "the advection-diffusion equation with CO2 solubility";
-  CO2_sol = CO2*solubilityCoeff;
+  CO2_sol = CO2 * solubilityCoeff;
   q = fluxConcB.q;
-  exhaleL = q > -1.0e-8;
+  exhaleL = q > (-1.0e-8);
   exhaleR = q > 1.0e-8;
 //CavityCO2-snow
   CO2 = if exhaleL then inStream(fluxConcB.CO2) else extrapolateField(CO2) indomain omega.left "left BC duringexhalation, extrapolation during inhalation";

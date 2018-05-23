@@ -29,16 +29,18 @@ function di = c013_001m2000_data_info()
     di.fTarget = 25;
 
     %crop times for simulation input data
-    di.W.crop = [251 858];
+    di.W.crop = [251 1000];
     di.WD.crop = [0 1040];
 
     %time when cone was connected
     di.W.tConnected = 441.2;
-    di.WD.tConnected = 381.2;
+    di.WD.tConnected = 381.2 - 5-1.4 - 0.3;
 
     %time when the cone was disconnected:
     di.W.tDisconnected = 732.5;
-	
+
+    %[baselineCO2 scalefactorCO2 baselineO2 scalefactorO2]
+    di.WD.scale = [0 1.77 20.83 1.8];
 	% repair the flow - if the pc exist,then the rest is not required and vice versa
 	di.flowRepair.pc = [34.5846522616504 0.490060133371872];
 	% points and spans to be invalidated
