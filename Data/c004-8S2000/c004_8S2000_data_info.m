@@ -13,7 +13,7 @@ function di = c004_8S2000_data_info()
     %columnT = [1 30];
     %columnTD = [1 30];
     di.W.column = [1 2 3 4 5];
-    di.WD.column = [2:3];
+    di.WD.column = [1:2];
 
     %columns to plot:
     di.T.varI = 1;
@@ -28,15 +28,15 @@ function di = c004_8S2000_data_info()
     di.fTarget = 25;
 
    %crop times for simulation input data
-    di.W.crop = [NaN NaN];
-    di.WD.crop = [NaN NaN];
+    di.W.crop = [0 1285];
+    di.WD.crop = [220 1367];
 
     %time when cone was connected
-    di.W.tConnected = NaN;
-    di.WD.tConnected = NaN;
+    di.W.tConnected = 599;
+    di.WD.tConnected = 676.8 - 1.68 - 1.64;
 
     %time when the cone was disconnected:
-    di.W.tDisconnected = NaN;
+    di.W.tDisconnected = 974;
 	
 	% repair the flow - if the pc exist,then the rest is not required and vice versa
 	di.flowRepair.pc = [21.9101 0.66882];
