@@ -1,4 +1,5 @@
 function [x, data] = processOne(filePath, di, caseID, setImpData, plotGrad, plotRepairFlow)
+%  ['file is' filePath]
   if nargin < 5
       plotGrad = 0;
   end
@@ -20,7 +21,8 @@ function [x, data] = processOne(filePath, di, caseID, setImpData, plotGrad, plot
         data(:,di.W.columnFlow) = repairFlowData(data(:, di.W.columnFlow), data(:, di.W.columnPress),di.flowRepair, plotRepairFlow);
       else
         data(:,di.W.columnFlow) = repairFlowData(data(:, di.W.columnFlow), [],di.flowRepair, plotRepairFlow);
-  end;
+      end
+  end
      
   %resample data, return new time grid as well. f1 .. original sample rate, f2 .. new sample rate.
   [x, data] = resampleX(data,di1.f,di.fTarget);

@@ -1,4 +1,4 @@
-function di = c013_001m2000_data_info()
+function di = c013_12m2000_data_info()
     %file names:
     %fileT = 'trends-c013-001m2000.txt';
     %fileTD = 'dutina-trends-c013-001m2000.txt';
