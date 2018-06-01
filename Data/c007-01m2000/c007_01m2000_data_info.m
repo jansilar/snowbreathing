@@ -25,19 +25,19 @@ function di = c007_01m2000_data_info()
     di.T.f = 1;
     di.TD.f = 1;
     di.W.f = 25;
-    di.WD.f = 25;
+    di.WD.f = 100;
     di.fTarget = 25;
 
    %crop times for simulation input data
-    di.W.crop = [NaN NaN];
-    di.WD.crop = [NaN NaN];
+    di.W.crop = [550 850];
+    di.WD.crop = [475 744];
 
     %time when cone was connected
-    di.W.tConnected = NaN;
-    di.WD.tConnected = NaN;
+    di.W.tConnected = 558;
+    di.WD.tConnected = 486.75-0.6 - 0.4;
 
     %time when the cone was disconnected:
-    di.W.tDisconnected = NaN;
+    di.W.tDisconnected = 801.6;
 	
 	% repair the flow - if the pc exist,then the rest is not required and vice versa
 	di.flowRepair.pc = [NaN NaN];

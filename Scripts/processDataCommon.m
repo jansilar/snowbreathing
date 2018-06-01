@@ -8,7 +8,7 @@
 % dir = 'c004-8S2000'; % flow repaired, , hotovo i grad - spasování vypadá dobře
 % dir = 'c004-11m2000'; % flow repaired, spasovano
 
-dir = 'c007-01m2000'; % flow repaired
+% dir = 'c007-01m2000'; % flow repaired, spasovano, chybi ale cast flow dat nekde vprostred
 % dir = 'c007-07m2000'; % flow cannot be succesefully repaired
 % dir = 'c007-08s2000'; % flow repaired, hotovo i grad - chybí data z dutiny po odpojení
 
@@ -18,5 +18,5 @@ dir = 'c007-01m2000'; % flow repaired
 %  allData(dir);
 setupFile = 1;
 plotGrad = 1;
-plotRepairFlow = 0;
+plotRepairFlow = 1;
 inputData(dir,setupFile,plotGrad,plotRepairFlow);
