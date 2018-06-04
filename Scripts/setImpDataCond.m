@@ -2,6 +2,7 @@ function [diNew, difNew] = setImpDataCond(di, caseID, x, data, setImpData, msg)
     if (setImpData)
         caseID
         di1 = di.(caseID);
+        figure; 
         plot(x,data(:,di1.varI));
         fprintf(['- ' msg '\n']);
         pause();

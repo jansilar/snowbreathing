@@ -8,17 +8,23 @@ function inputData(baseName,setImpDat, plotGrad, plotRepairFlow)
   %read the dataInfo file:
   filePath = ['../Data/' baseName '/'];
   tuneFinished = ~setImpDat;
+  
+  close all;
   while (1)
-    close all;
+%     close all;
     di = readDataInfo(baseName);
     [xW, dataW] = processOne(filePath, di, 'W', setImpDat, plotGrad,plotRepairFlow);
     [xWD, dataWD] = processOne(filePath, di, 'WD', setImpDat);
     xdata = mergeData({xW, xWD}, {dataW, dataWD});
-    varNames = [di.W.varName, di.WD.varName]
+    varNames = [di.W.varName, di.WD.varName];
     di.tDisconnected = di.W.tDisconnected - di.W.tConnected;
-    figure;
+    figure(201); 
+    items = get(gca, 'children');
+    if length(items) > 1
+        delete(get(gca, 'children')); axis manual; 
+    end;
     hold on;
-    toPlot = [di.W.varI di.WD.varI+size(di.W.column,2)]
+    toPlot = [di.W.varI di.WD.varI+size(di.W.column,2)];
     plotData(xdata, varNames, toPlot, [1, 1, 1, 1, 1]);
     plot(di.tDisconnected,0,'k+');
     setImpDat = 0;

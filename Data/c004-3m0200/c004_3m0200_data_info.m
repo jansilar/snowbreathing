@@ -28,15 +28,15 @@ function di = c004_3m0200_data_info()
     di.fTarget = 25;
 
    %crop times for simulation input data
-    di.W.crop = [NaN NaN];
-    di.WD.crop = [NaN NaN];
+    di.W.crop = [380 540];
+    di.WD.crop = [0 500];
 
     %time when cone was connected
-    di.W.tConnected = NaN;
-    di.WD.tConnected = NaN;
+    di.W.tConnected = 387;
+    di.WD.tConnected = 0;
 
     %time when the cone was disconnected:
-    di.W.tDisconnected = NaN;
+    di.W.tDisconnected = 533;
 	
 	% repair the flow - if the pc exist,then the rest is not required and vice versa
 	di.flowRepair.pc = [NaN NaN];
