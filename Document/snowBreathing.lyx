@@ -1,0 +1,406 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Breathing in snow
+\end_layout
+
+\begin_layout Section
+Advection-diffusion equation
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\frac{\partial c}{\partial t}+\nabla\cdot(u\cdot c)-D\triangle c=0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $c$
+\end_inset
+
+ ..
+ concentration
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $u$
+\end_inset
+
+ ..
+ velocity of advection
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $D$
+\end_inset
+
+ ..
+ diffusion coefficient
+\end_layout
+
+\begin_layout Standard
+We assume incompressible flow (i.e.
+ the velocity vector 
+\begin_inset Formula $u$
+\end_inset
+
+ holds 
+\begin_inset Formula $\nabla\cdot u=0$
+\end_inset
+
+), than the eq.
+ simplifies to
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\frac{\partial c}{\partial t}+u\cdot\nabla c-D\triangle c=0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+in Cartesian 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\frac{\partial c}{\partial t}+u\cdot\left(\frac{\partial}{\partial x},\frac{\partial}{\partial y},\frac{\partial}{\partial z}\right)c-D\left(\frac{\partial^{2}}{\partial x^{2}}+\frac{\partial^{2}}{\partial y^{2}}+\frac{\partial^{2}}{\partial z^{2}}\right)c=0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+In spherical coordinate
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename Img/spherical.png
+	lyxscale 50
+	width 60text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+x & = & r\cdot\sin\theta\cos\varphi\\
+y & = & r\cdot\sin\theta\sin\varphi\\
+z & = & r\cdot\cos\theta
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Advection term
+\end_layout
+
+\begin_layout Standard
+grad in spherical:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\nabla c=\frac{\partial c}{\partial r}\hat{\mathbf{r}}+\frac{1}{r}\frac{\partial c}{\partial\theta}\hat{\boldsymbol{\theta}}+\frac{1}{r\sin\theta}\frac{\partial c}{\partial\varphi}\hat{\boldsymbol{\varphi}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $\hat{\mathbf{r}},\hat{\boldsymbol{\theta}},\hat{\boldsymbol{\varphi}}$
+\end_inset
+
+ are unit vector in direction of increasing 
+\begin_inset Formula $r,\,\theta,\,\varphi$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+All derivatives except 
+\begin_inset Formula $\frac{\partial}{\partial r}$
+\end_inset
+
+ equal to zero, then grad reduces to
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\frac{\partial c}{\partial r}\hat{\mathbf{r}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Velocity of flow decrease with radius
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+u=\frac{q}{4\pi r^{2}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $q$
+\end_inset
+
+ ..
+ flux of air from the tube outlet.
+ The advection term is finally
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\frac{q}{4\pi r^{2}}\frac{\partial c}{\partial r}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Diffusion term
+\end_layout
+
+\begin_layout Standard
+Laplace in spherical:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\triangle c=\left(\frac{\partial^{2}}{\partial r^{2}}+\frac{2}{r}\frac{\partial}{\partial r}\right)c+\frac{1}{r^{2}\sin\theta}\frac{\partial}{\partial\theta}\left(\sin\theta\frac{\partial}{\partial\theta}\right)c+\frac{1}{r^{2}\sin^{2}\theta}\frac{\partial^{2}}{\partial\varphi^{2}}c
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+All derivatives except 
+\begin_inset Formula $\frac{\partial}{\partial r}$
+\end_inset
+
+ equal zero, then the eq.
+ (multiplied by the diffusion coefficient) reduces to
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+D\left(\frac{\partial^{2}}{\partial r^{2}}+\frac{2}{r}\frac{\partial}{\partial r}\right)c
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+The advection-difussion equation in spherical coordinate
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+\frac{\partial c}{\partial t}+\frac{q}{4\pi r^{2}}\frac{\partial c}{\partial r}-D\left(\frac{\partial^{2}}{\partial r^{2}}+\frac{2}{r}\frac{\partial}{\partial r}\right)c & =\\
+\frac{\partial c}{\partial t}+\left(\frac{q}{4\pi r^{2}}-\frac{2D}{r}\right)\frac{\partial c}{\partial r}-D\frac{\partial^{2}c}{\partial r^{2}} & = & 0
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Solubility in water content
+\end_layout
+
+\begin_layout Standard
+partial pressure:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+P_{CO2}=P\cdot CO_{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+molar concentration of dissolved CO2 in pure water [mol/kg], Henrys law:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+cCO2_{H2O}=kH\cdot PCO2
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\frac{\partial CO_{2}}{\partial t}(1+c_{s})+\nabla\cdot(u\cdot CO_{2})-D\triangle CO_{2}=0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $c_{s}$
+\end_inset
+
+ ..
+ solubility coef, = VmolCO2 * kH * P * wc / (1 - SnowVolFrac)
+\end_layout
+
+\begin_layout Standard
+Temperature dependency
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+kH_{25} & =0.034\\
+T_{25} & =298.15\\
+T_{0} & =275.15\\
+kH_{0} & =kH25*exp(2400*((1/T0)-1/(T25)))
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+ref: https://webbook.nist.gov/cgi/cbook.cgi?ID=C124389&Mask=10
+\end_layout
+
+\end_body
+\end_document

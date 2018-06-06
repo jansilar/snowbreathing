@@ -152,5 +152,7 @@ def complete_identification(model_file, model_name, objective_variable, paramete
 #print complete_identification("../SnowBreathing/package.mo", "SnowBreathing.Models.c013_12s2000_snow", "coneCompGrad.RMSCO2", {"coneCompGrad.D_CO2": 3.0e-4}, 800)
 #print complete_identification("advection.mo", "advection", "uu", {"c": 0.45}, [0.0, 1.0], 1, 0)
 #print complete_identification("advection.mo", "advection", "uuRoot", {"c": 0.45}, [0.0, 1.0], 1, 1)
-print complete_identification("../SnowBreathing/package.mo", "SnowBreathing.Models.c004_8S2000_snow", "virtualCavity.ErrCO2", {"coneCompGrad.D_CO2": 3.0e-3}, [1.0e-5, 1.0e-2], 686, 1)
-print complete_identification("../SnowBreathing/package.mo", "SnowBreathing.Models.c013_12s2000_snow", "virtualCavity.ErrCO2", {"coneCompGrad.D_CO2": 3.0e-3}, [1.0e-5, 1.0e-2], 611, 1)
+#print complete_identification("../SnowBreathing/package.mo", "SnowBreathing.Models.c004_8S2000_snow", "virtualCavity.ErrCO2", {"coneCompGrad.D_CO2": 3.0e-3}, [1.0e-5, 1.0e-2], 686, 1) #D_CO2 = 7.2278e-4
+#print complete_identification("../SnowBreathing/package.mo", "SnowBreathing.Models.c004_8S2000_snow", "virtualCavity.ErrO2", {"coneCompGrad.D_O2": 3.0e-3}, [1.0e-5, 1.0e-2], 686, 1) #D_O2 = 7.248e-4
+#print complete_identification("../SnowBreathing/package.mo", "SnowBreathing.Models.c013_12s2000_snow", "virtualCavity.ErrCO2", {"coneCompGrad.D_CO2": 3.0e-3}, [1.0e-5, 1.0e-2], 611, 1)
+print complete_identification("../SnowBreathing/package.mo", "SnowBreathing.Models.c004_11m2000_snow", "virtualCavity1.ErrO2", {"coneCompGrad1.D_O2": 3.0e-3}, [1.0e-5, 1.0e-2], 322, 1) #D_O2 =7.15764994779e-4
