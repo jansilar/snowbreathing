@@ -1,20 +1,27 @@
 import os
 from OMPython import OMCSessionZMQ
 import time
-from scipy.optimize import minimize, basinhopping, minimize_scalar
+from scipy.optimize import minimize, basinhopping, minimize_scalar, newton, brentq, brenth, bisect
 import numpy
 
 #from OMPython import ModelicaSystem
 
 class ModelicaModel:
-    def __init__(self, path_file, name):
+    def __init__(self, path_file, name, display_errors):
         self.path_file = os.path.abspath(path_file)
         self.path = os.path.dirname(self.path_file)
         self.name = name
+        self.display_errors = display_errors
         os.chdir(self.path)
+        os.chdir("../")
+        print("Working directory is " + os.getcwd() + "\n")
         self.stop_time = 0
         self.omc = OMCSessionZMQ()
-        self.omc.sendExpression("setCommandLineOptions(\"+g=PDEModelica\")")
+        print self.omc.sendExpression("getVersion()")
+        self.print_err()
+        print self.omc.sendExpression("setCommandLineOptions(\"+g=PDEModelica --demoMode=true\")")
+        self.print_err()
+        print self.omc.sendExpression("loadModel(Modelica)")
         self.print_err()
         self.omc.sendExpression("loadFile(\"" + path_file + "\")")
         self.print_err()
@@ -25,7 +32,8 @@ class ModelicaModel:
         init_file.close()
 
     def print_err(self):
-        print self.omc.sendExpression("getErrorString()")
+        if self.display_errors:
+            print self.omc.sendExpression("getErrorString()")
 
     def set_stop_time(self, stop_time):
         self.stop_time = stop_time
@@ -40,7 +48,8 @@ class ModelicaModel:
     def simulate(self):
         #os.chdir("./WorkingDir/")
         simul_str = "simulate(" + self.name + ", stopTime=" + str(self.stop_time) + ", simflags = \"-overrideFile=init_file.txt\")"
-        self.omc.sendExpression(simul_str)
+        print self.omc.sendExpression(simul_str)
+        self.print_err()
         #os.chdir("../")
 
     def get_var(self, var, t):
@@ -53,8 +62,7 @@ class ModelicaModel:
         return self.get_var(var, self.stop_time)
 
 
-
-class Optimization:
+class Identification:
     def __init__(self, model, objective_variable, parameters_init_dict, bounds, stop_time):
         self.model = model
         self.objective_variable = objective_variable
@@ -74,7 +82,7 @@ class Optimization:
 
         objective_val = self.model.get_var_final(self.objective_variable)
 
-        print "objectve value: " + str(objective_val) + "\n"
+        print "objectve/root value: " + str(objective_val) + "\n"
         return objective_val
 
     def objective_fun_scalar(self, parameter):
@@ -88,9 +96,16 @@ class Optimization:
         return minimize_scalar(self.objective_fun_scalar, bounds=self.bounds, method='bounded')
         #return minimize_scalar(self.objective_fun_scalar, bracket=[0.0, 0.5, 1.0], method='brent')
 
-def save_and_print_results(file_name, model_name, parameter_names, objective_variable, results):
-    p_val = results["x"]
-    file_name_txt = "./Results/" + os.path.splitext(os.path.basename(file_name))[0] + "_" + model_name + ".txt"
+    def findRoot(self):
+        #return newton(self.objective_fun_scalar, self.init_values[0])
+        return brentq(self.objective_fun_scalar, self.bounds[0], self.bounds[1])
+
+def save_and_print_results(file_name, model_name, parameter_names, objective_variable, results, ident_type):
+    if ident_type == 0:
+        p_val = results["x"]
+    else:
+        p_val = results
+    file_name_txt = "./Identification/Results/" + os.path.splitext(os.path.basename(file_name))[0] + "_" + model_name + ".txt"
     with open(file_name_txt, "a") as f:
         f.write("Time:\t" + str(time.ctime()) + "\n")
         f.write("Model file:\t" + file_name + "\n")
@@ -109,15 +124,24 @@ def save_and_print_results(file_name, model_name, parameter_names, objective_var
     f.close()
 
 
-def complete_identification(model_file, model_name, objective_variable, parameters_init_dict, bounds, stop_time):
+def complete_identification(model_file, model_name, objective_variable, parameters_init_dict, bounds, stop_time, ident_type):
     model_file_abs = os.path.abspath(model_file)
+    display_errors = True
     #os.chdir("./WorkingDir")
-    model = ModelicaModel(model_file_abs, model_name)
-    optim = Optimization(model, objective_variable, parameters_init_dict, bounds, stop_time)
-    results = optim.optimize()
+    model = ModelicaModel(model_file_abs, model_name, display_errors)
+    identification = Identification(model, objective_variable, parameters_init_dict, bounds, stop_time)
+    if ident_type == 0:
+        results = identification.optimize()
+    else:
+        results = identification.findRoot()
     #os.chdir("../")
-    save_and_print_results(model_file, model_name, parameters_init_dict.keys(), objective_variable, results)
-    return results["x"]
+    save_and_print_results(model_file, model_name, parameters_init_dict.keys(), objective_variable, results, ident_type)
+    if ident_type == 0:
+        x = results["x"]
+    else:
+        x = results
+    return x
+
 
 
 
@@ -126,4 +150,7 @@ def complete_identification(model_file, model_name, objective_variable, paramete
 #print complete_identification("../Dumping.mo", "Dumping", "y", {"k": 1}, 10)
 
 #print complete_identification("../SnowBreathing/package.mo", "SnowBreathing.Models.c013_12s2000_snow", "coneCompGrad.RMSCO2", {"coneCompGrad.D_CO2": 3.0e-4}, 800)
-print complete_identification("advection.mo", "advection", "uu", {"c": 0.45}, [0.0, 1.0], 1)
+#print complete_identification("advection.mo", "advection", "uu", {"c": 0.45}, [0.0, 1.0], 1, 0)
+#print complete_identification("advection.mo", "advection", "uuRoot", {"c": 0.45}, [0.0, 1.0], 1, 1)
+print complete_identification("../SnowBreathing/package.mo", "SnowBreathing.Models.c004_8S2000_snow", "virtualCavity.ErrCO2", {"coneCompGrad.D_CO2": 3.0e-3}, [1.0e-5, 1.0e-2], 686, 1)
+print complete_identification("../SnowBreathing/package.mo", "SnowBreathing.Models.c013_12s2000_snow", "virtualCavity.ErrCO2", {"coneCompGrad.D_CO2": 3.0e-3}, [1.0e-5, 1.0e-2], 611, 1)
