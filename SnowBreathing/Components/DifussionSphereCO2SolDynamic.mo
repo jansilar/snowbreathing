@@ -1,14 +1,11 @@
 within SnowBreathing.Components;
 
-model DifussionSphereCO2
+model DifussionSphereCO2SolDynamic
   constant Real theta(unit = "rad") = pi "angle from cone axle to the wall";
   constant Real facA(unit = "1/m2") = 2 * pi * (1 - cos(theta)) "facA*r^2 = cone outside surface area";
-  parameter Integer solubilityModel = 0 "0 .. noSolubility, 1 .. steady-state, 2 .. dynamic";
+  parameter Boolean useCO2Solubility = false;
   //old variant: 1 + MmCO2 / rho_CO2 * kH * P * wc
-  parameter Real solubilityCoeffSteady(unit = "1") = if solubilityModel == 1 then VmolCO2 * kH * P * wc / (1 - SnowVolFrac) else 0;
-  parameter Real solubilityCoeffDynamic(unit = "1") = VmolCO2 * kH * P * wc / (1 - SnowVolFrac);
-  parameter Real gamma(unit = "s-1") = 1 "solubility constant";
-  parameter Real gammaIn = if solubilityModel == 2 then gamma else 0;
+  Real solubilityCoeff(unit = "1") = if useCO2Solubility then VmolCO2 * kH * P * wc / (1 - SnowVolFrac) else 0;
   parameter Real VmolCO2(unit = "m3/mol") = 22.263e-3;
   parameter Real rho_water(unit = "kg/m3") = 1000;
   //Snow
@@ -34,6 +31,7 @@ model DifussionSphereCO2
   parameter Real P(unit = "Pa") = 100000 "Pa";
   parameter Real MmCO2(unit = "kg/mol") = 44.0095 * 1.0e-3 "kg/mol CO2 molar mass";
   parameter Real SnowVolFrac = 0.5 "volume fraction of snow";
+  parameter Real gamma(unit = "s-1") = 1 "solubility constant";
   // DEBUG COMPUTATIONS
   //    field Real PCO2(domain = omega, unit = "Pa") "Pa CO2 partial pressure";
   //    field Real CO2Snow(domain = omega, unit = "kg/m3") "kg/m3 mass of dissoved CO2 per m3 of snow";
@@ -48,8 +46,8 @@ equation
 //    PCO2 = P * CO2 indomain omega;
 //    cCO2H2O = kH * PCO2 indomain omega "Henrys law, concentration in mol/kg";
 //    CO2Snow = MmCO2 * cCO2H2O * wc indomain omega;
-  der(CO2) * (1 + solubilityCoeffSteady) + (q / (facA * omega.x ^ 2) / SnowVolFrac - 2 * D_CO2 / omega.x) * pder(CO2, x) - D_CO2 * pder(CO2, x, x)  - gammaIn * (CO2_sol - solubilityCoeffDynamic * CO2)= 0 indomain omega "the advection-diffusion equation with CO2 solubility";
-  der(CO2_sol) = if solubilityModel == 2 then - gammaIn * (CO2_sol - solubilityCoeffDynamic * CO2) else der(CO2) * solubilityCoeffSteady indomain omega "equation for disolved water";
+  der(CO2) + (q / (facA * omega.x ^ 2) / SnowVolFrac - 2 * D_CO2 / omega.x) * pder(CO2, x) - D_CO2 * pder(CO2, x, x) - gamma * (CO2_sol - solubilityCoeff * CO2) = 0 indomain omega "the advection-diffusion equation with CO2 solubility";
+  der(CO2_sol) + gamma * (CO2_sol - solubilityCoeff * CO2) = 0 indomain omega "equation for disolved water";
   q = fluxConcB.q;
   exhaleL = q > (-1.0e-8);
   exhaleR = q > 1.0e-8;
@@ -62,4 +60,4 @@ equation
   annotation(
     experiment(StartTime = 0, StopTime = 300, Tolerance = 1e-06, Interval = 0.02),
     Icon(coordinateSystem(initialScale = 0.1), graphics = {Ellipse(origin = {2, -12}, lineColor = {129, 207, 255}, fillColor = {129, 207, 255}, fillPattern = FillPattern.Sphere, extent = {{-102, 112}, {98, -88}}, endAngle = 360)}));
-end DifussionSphereCO2;
+end DifussionSphereCO2SolDynamic;

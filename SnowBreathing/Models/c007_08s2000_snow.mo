@@ -1,9 +1,9 @@
 within SnowBreathing.Models;
 
-model c013_12s2000_snow
-  SnowBreathing.Components.ConeCompGrad coneCompGrad( D_CO2 = 1e-2, D_O2 = 3e-4,caseID = "c007-08s2000", useCO2Solubility = false) annotation(
+model c007_08s2000_snow
+  SnowBreathing.Components.ConeCompGrad coneCompGrad( D_CO2 = 1e-2, D_O2 = 3e-4,caseID = "c013-12s2000", useCO2Solubility = false) annotation(
     Placement(visible = true, transformation(origin = {10, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  SnowBreathing.Components.ExperimentalData data(caseID = "c007-08s2000") annotation(
+  SnowBreathing.Components.ExperimentalData data(caseID = "c013-12s2000") annotation(
     Placement(visible = true, transformation(origin = {-58, -8}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   SnowBreathing.Components.VirtualCavity virtualCavity annotation(
     Placement(visible = true, transformation(origin = {-46, 34}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
@@ -20,4 +20,4 @@ equation
     Line(points = {{-50, -8}, {-18, -8}, {-18, 0}, {10, 0}}, color = {0, 12, 255}));
   annotation(
     experiment(StartTime = 0, StopTime = 611, Tolerance = 1e-06, Interval = 0.04));
-end c013_12s2000_snow;
+end c007_08s2000_snow;

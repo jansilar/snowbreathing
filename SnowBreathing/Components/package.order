@@ -19,3 +19,6 @@ Cone
 ConeCompGrad
 AdvectionTube
 VirtualCavity
+CO2O2Source
+DifussionSphereCO2SolDynamic
+CO2Source

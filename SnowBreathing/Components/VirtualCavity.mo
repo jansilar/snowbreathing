@@ -11,22 +11,25 @@ model VirtualCavity
     Placement(visible = true, transformation(origin = {10, 8}, extent = {{-20, -20}, {20, 20}}, rotation = 0), iconTransformation(origin = {18, -80}, extent = {{-20, -20}, {20, 20}}, rotation = 90)));
   parameter Real V(unit = "m3") = 0.002;
   Real VCO2(unit = "m3");
+  Real VCO2InTotal(unit = "m3", start = 0) "total CO2 volume that came into the cavity";
   Real VO2(unit = "m3");
   Real CO2(unit = "m3/m3");
   Real O2(unit = "m3/m3");
   Real ErrCO2(start = 0, fixed = true);
   Real ErrO2(start = 0, fixed = true);
+  Boolean inhale;
 equation
   fluxConcCO2O2.q = 0;   //no real air exchange between the cavity and snow
-  when qIn > 0 then
+  when qIn > 0 then       //reset on each inspiration start
     reinit(VCO2, V*CO2In);
     reinit(VO2, V*O2In);
   end when;
-  
-  der(VCO2) = if qIn > 0 then (inStream(fluxConcCO2O2.CO2)-CO2)*qIn else 0;
-  der(VO2)  = if qIn > 0 then (inStream(fluxConcCO2O2.O2) -O2)*qIn else 0;
-  der(ErrCO2) = if qIn > 0 then CO2 - CO2In else 0;
-  der(ErrO2)  = if qIn > 0 then O2  - O2In  else 0;
+  inhale = qIn > 1.0e-8;
+  der(VCO2) = if inhale then (inStream(fluxConcCO2O2.CO2)-CO2)*qIn else 0;
+  der(VO2)  = if inhale then (inStream(fluxConcCO2O2.O2) -O2)*qIn else 0;
+  der(VCO2InTotal) = if inhale then inStream(fluxConcCO2O2.CO2)*qIn else 0;
+  der(ErrCO2) = if inhale then CO2 - CO2In else 0;
+  der(ErrO2)  = if inhale then O2  - O2In  else 0;
   CO2 = VCO2/V;
   O2 = VO2/V;
   //dummy equations:
