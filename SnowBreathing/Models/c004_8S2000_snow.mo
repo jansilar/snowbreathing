@@ -1,7 +1,7 @@
 within SnowBreathing.Models;
 
 model c004_8S2000_snow
-  SnowBreathing.Components.ConeCompGrad coneCompGrad( D_CO2 = 7.2278e-4, D_O2 = 7.248e-4,caseID = "c004-8S2000", useCO2Solubility = false) annotation(
+  SnowBreathing.Components.ConeCompGrad coneCompGrad( D_CO2 = 7.23161687077e-4, D_O2 = 7.25139213663e-4,caseID = "c004-8S2000", solubilityModel = 0) annotation(
     Placement(visible = true, transformation(origin = {10, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   Components.ExperimentalData data(caseID = "c004-8S2000") annotation(
     Placement(visible = true, transformation(origin = {-54, -6}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));

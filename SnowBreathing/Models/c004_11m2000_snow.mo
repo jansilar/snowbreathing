@@ -3,7 +3,7 @@ within SnowBreathing.Models;
 model c004_11m2000_snow
   SnowBreathing.Components.ExperimentalData experimentalData1(caseID = "c004-11m2000")  annotation(
     Placement(visible = true, transformation(origin = {-58, -12}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  Components.ConeCompGrad coneCompGrad1(D_CO2 = 7.15764994779e-4, D_O2 = 7.15764994779e-4, caseID = "c004-11m2000", useCO2Solubility = true)  annotation(
+  Components.ConeCompGrad coneCompGrad1(D_CO2 = 4.48799322137e-4, D_O2 = 4.48799322137e-4, caseID = "c004-11m2000", gamma = 0.0205209563215, solubilityModel = 2)  annotation(
     Placement(visible = true, transformation(origin = {10, -14}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   SnowBreathing.Components.VirtualCavity virtualCavity1 annotation(
     Placement(visible = true, transformation(origin = {-42, 66}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
@@ -19,5 +19,5 @@ equation
   connect(experimentalData1.fluxConcCO2O2, coneCompGrad1.fluxConcB) annotation(
     Line(points = {{-50, -12}, {10, -12}, {10, -14}, {10, -14}}, color = {0, 12, 255}));
   annotation(
-    experiment(StartTime = 0, StopTime = 580, Tolerance = 1e-06, Interval = 0.02));
+    experiment(StartTime = 0, StopTime = 580, Tolerance = 1e-06, Interval = 0.04));
 end c004_11m2000_snow;

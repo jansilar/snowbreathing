@@ -361,11 +361,15 @@ cCO2_{H2O}=kH\cdot PCO2
 
 \end_layout
 
+\begin_layout Subsubsection
+Solution in steady state
+\end_layout
+
 \begin_layout Standard
 \begin_inset Formula 
-\[
-\frac{\partial CO_{2}}{\partial t}(1+c_{s})+\nabla\cdot(u\cdot CO_{2})-D\triangle CO_{2}=0
-\]
+\begin{equation}
+\frac{\partial CO_{2}}{\partial t}(1+c_{s})+\nabla\cdot(u\cdot CO_{2})-D\triangle CO_{2}=0\label{eq:adv-dif-sol}
+\end{equation}
 
 \end_inset
 
@@ -377,7 +381,143 @@ cCO2_{H2O}=kH\cdot PCO2
 \end_inset
 
  ..
- solubility coef, = VmolCO2 * kH * P * wc / (1 - SnowVolFrac)
+ solubility coef, = 
+\begin_inset Formula $VmolCO2*kH*P*wc/(1-SnowVolFrac)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Derivation of (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:adv-dif-sol"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+):
+\end_layout
+
+\begin_layout Standard
+Time change of CO2 due to advection:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\left(\frac{\partial CO_{2}}{\partial t}\right)_{adv}=-\nabla\cdot(u\cdot CO_{2})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Time change due to diffusion:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\left(\frac{\partial CO_{2}}{\partial t}\right)_{dif}=D\triangle CO_{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Time change due to water solution:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+CO_{2}^{sol} & =c_{s}CO_{2}\\
+\left(\frac{\partial CO_{2}}{\partial t}\right)_{sol} & =c_{s}\frac{\partial CO_{2}}{\partial t}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+All together
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\frac{\partial CO_{2}}{\partial t} & =\left(\frac{\partial CO_{2}}{\partial t}\right)_{sol}+\left(\frac{\partial CO_{2}}{\partial t}\right)_{adv}+\left(\frac{\partial CO_{2}}{\partial t}\right)_{dif}=\\
+= & c_{s}\frac{\partial CO_{2}}{\partial t}-\nabla\cdot(u\cdot CO_{2})+D\triangle CO_{2}\\
+\Rightarrow & \frac{\partial CO_{2}}{\partial t}(1+c_{s})+\nabla\cdot(u\cdot CO_{2})-D\triangle CO_{2}=0
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+If the eq (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:adv-dif-sol"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+) is devided by 
+\begin_inset Formula $1+c_{s}$
+\end_inset
+
+ we get the original equation with diffusion and advection coefficients
+ lowered.
+\end_layout
+
+\begin_layout Subsubsection
+Solution dynamic
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\left(\frac{\partial CO_{2}}{\partial t}\right)_{sol} & =\gamma\left(CO_{2}^{sol}-CO_{2}^{maxsol}\right)=\tau\left(CO_{2}^{sol}-c_{s}\cdot CO_{2}\right)\\
+\frac{\partial CO_{2}^{sol}}{\partial t} & =-\gamma\left(CO_{2}^{sol}-c_{s}\cdot CO_{2}\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The complete eq system:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\frac{\partial CO_{2}}{\partial t}+\nabla\cdot(u\cdot CO_{2})-D\triangle CO_{2}-\gamma\left(CO_{2}^{sol}-c_{s}\cdot CO_{2}\right) & =0\\
+\frac{\partial CO_{2}^{sol}}{\partial t}+\gamma\left(CO_{2}^{sol}-c_{s}\cdot CO_{2}\right) & =0
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Henry constant time dependency
 \end_layout
 
 \begin_layout Standard
