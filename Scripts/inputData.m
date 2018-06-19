@@ -38,14 +38,25 @@ function inputData(baseName,setImpDat, plotGrad, plotRepairFlow)
         tuneFinished = 1;
     end;
   end;
-  CO2O2_25 = xdata(:,[1,di.WD.varI+size(di.W.column,2)+1]);
-  [1,di.WD.varI+size(di.W.column,2)]
-%  CO2O2 = avgDownsample(CO2O2_100, 20);
+  
+  % Save to the MAT files for modelica
+  % time, CO2_cavity, O2_cavity, CO2_mouthpiece, O2_mouthpiece, flow
+  varNames
+  columns = [ [0,di.WD.varI+size(di.W.column,2), [1, 2]]+1, 5]
+  CO2O2_25 = xdata(:,columns);
+  %  CO2O2 = avgDownsample(CO2O2_100, 20);
   CO2O2 = CO2O2_25;
-  figure;
-  plot(CO2O2(:,1),CO2O2(:,3))
+    
+  clf; 
+  subplot(211);hold on;
+  plot(CO2O2(:,1),CO2O2(:,3));
+  plot(CO2O2(:,1),CO2O2(:,5));
+  subplot(212);hold on;
+  plot(CO2O2(:,1),CO2O2(:,2));
+  plot(CO2O2(:,1),CO2O2(:,4));
 %   error('Šmitec')
   save('-v4',[filePath 'CO2O2.mat'], 'CO2O2')  
+  
   Flow_25 = xdata(:,[1,5]);
   Flow = Flow_25;
 %  Flow = avgDownsample(Flow_100,20);

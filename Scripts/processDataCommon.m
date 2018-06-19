@@ -19,13 +19,13 @@ dir = 'c013-001m2000'; %hotovo i grad - přeškálováno
 %dir = 'c013-12s2000'; %hotovo i grad - přeškálováno
 %  allData(dir);
 setupFile = 0;
-plotGrad = 1;
+plotGrad = 0;
 plotRepairFlow = 0;
-inputData(dir,setupFile,plotGrad,plotRepairFlow);
+% inputData(dir,setupFile,plotGrad,plotRepairFlow);
 
-%dirs = {'c004-4m2000';'c004-8S2000';'c004-11m2000';'c007-01m2000';'c007-08s2000';'c013-001m2000';'c013-12m2000';'c013-12s2000'};
-%for i=1:numel(dirs)
-%    dir = dirs{i};
-%    ['processing ' dir ' data set\n']
-%    inputData(dir,setupFile,plotGrad,plotRepairFlow);
-%end;
+dirs = {'c004-4m2000';'c004-8S2000';'c004-11m2000';'c007-01m2000';'c007-08s2000';'c013-001m2000';'c013-12m2000';'c013-12s2000'};
+for i=1:numel(dirs)
+   dir = dirs{i};
+   ['processing ' dir ' data set\n']
+   inputData(dir,setupFile,plotGrad,plotRepairFlow);
+end;
