@@ -11,9 +11,9 @@ model ExperimentalData
   parameter String caseID;
   Real CO2_act;
   Real O2_act;
-  parameter String fileCO2O2 = "Data/" + caseID + "/CO2O2.mat";
+  parameter String fileCO2O2 = Modelica.Utilities.Files.loadResource("modelica://SnowBreathing") + "/../Data/" + caseID + "/CO2O2.mat";
   //Modelica.Utilities.Files.loadResource("modelica://../Data/" + caseID + "/CO2O2.mat");
-  parameter String fileFlow = "Data/" + caseID + "/Flow.mat";
+  parameter String fileFlow = Modelica.Utilities.Files.loadResource("modelica://SnowBreathing") + "/../Data/" + caseID + "/Flow.mat";
   //Modelica.Utilities.Files.loadResource("modelica://../Data/" + caseID + "/Flow.mat");
   Real CO2OutSum(start = 0, fixed = true), O2OutSum(start = 0, fixed = true) "volume of CO2 and O2 that left the component";
   Real CO2InExpSum(start = 0, fixed = true), O2InExpSum(start = 0, fixed = true) "volume of CO2 and O2 that entered the component according to experimental data";

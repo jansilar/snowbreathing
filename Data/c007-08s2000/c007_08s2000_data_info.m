@@ -39,6 +39,9 @@ function di = c007_08s2000_data_info()
     %time when the cone was disconnected:
     di.W.tDisconnected = 1027.5;
 	
+    %[baselineCO2 scalefactorCO2 baselineO2 scalefactorO2]
+    di.WD.scale = [0 1.68 20.83 1.8];
+    
 	% repair the flow - if the pc exist,then the rest is not required and vice versa
 	di.flowRepair.pc = [26.5324 0.58096];
 	% points and spans to be invalidated

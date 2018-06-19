@@ -5,7 +5,7 @@ model ConeCompGrad
   Modelica.Blocks.Sources.CombiTimeTable table(columns = 1:4, extrapolation = Modelica.Blocks.Types.Extrapolation.HoldLastPoint, fileName = fileGrad, smoothness = Modelica.Blocks.Types.Smoothness.ConstantSegments, tableName = "GRAD", tableOnFile = true)  annotation(
     Placement(visible = true, transformation(origin = {-56, 4}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   parameter String caseID "e.g. c013-12s2000";
-  parameter String fileGrad = "Data/" + caseID + "/" + caseID + "_grad.mat";
+  parameter String fileGrad = Modelica.Utilities.Files.loadResource("modelica://SnowBreathing") + "/../Data/" + caseID + "/" + caseID + "_grad.mat";
   constant Integer NRows = 13 "number of gradient samples";
   Real tGT;   //gradient table mesurement time
   discrete Real tGTOld; //gradient table mesurement old time - pre does not work on continuous

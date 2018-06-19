@@ -12,8 +12,8 @@ class ModelicaModel:
         self.path = os.path.dirname(self.path_file)
         self.name = name
         self.display_errors = display_errors
-        os.chdir(self.path)
-        os.chdir("../")
+#        os.chdir(self.path)
+#        os.chdir("../")
         print("Working directory is " + os.getcwd() + "\n")
         self.stop_time = 0
         self.omc = OMCSessionZMQ()
@@ -127,14 +127,18 @@ def save_and_print_results(file_name, model_name, parameter_names, objective_var
 def complete_identification(model_file, model_name, objective_variable, parameters_init_dict, bounds, stop_time, ident_type):
     model_file_abs = os.path.abspath(model_file)
     display_errors = True
-    #os.chdir("./WorkingDir")
+    wdir = "./WorkingDir/" + model_name + "_" + str(time.time())
+    os.makedirs(wdir)
+    os.chdir(wdir)
+
+
     model = ModelicaModel(model_file_abs, model_name, display_errors)
     identification = Identification(model, objective_variable, parameters_init_dict, bounds, stop_time)
     if ident_type == 0:
         results = identification.optimize()
     else:
         results = identification.findRoot()
-    #os.chdir("../")
+    os.chdir("../../")
     save_and_print_results(model_file, model_name, parameters_init_dict.keys(), objective_variable, results, ident_type)
     if ident_type == 0:
         x = results["x"]
@@ -156,5 +160,6 @@ def complete_identification(model_file, model_name, objective_variable, paramete
 #print complete_identification("../SnowBreathing/package.mo", "SnowBreathing.Models.c004_8S2000_snow", "virtualCavity.ErrO2", {"coneCompGrad.D_O2": 3.0e-3}, [1.0e-5, 1.0e-2], 686, 1) #D_O2 = 7.25139213663e-4
 #print complete_identification("../SnowBreathing/package.mo", "SnowBreathing.Models.c013_12s2000_snow", "virtualCavity.ErrCO2", {"coneCompGrad.D_CO2": 3.0e-3}, [1.0e-5, 1.0e-2], 611, 1)
 #print complete_identification("../SnowBreathing/package.mo", "SnowBreathing.Models.c004_11m2000_snow", "virtualCavity1.ErrO2", {"coneCompGrad1.D_O2": 3.0e-3}, [1.0e-5, 1.0e-2], 322, 1) #D_O2 =4.48799322137e-4
-print complete_identification("../SnowBreathing/package.mo", "SnowBreathing.Models.c004_11m2000_snow", "virtualCavity1.ErrCO2", {"coneCompGrad1.gamma": 1.0}, [0.0, 5.0], 255, 1) # gamma = 0.0205209563215
-#print complete_identification("../SnowBreathing/package.mo", "SnowBreathing.Models.c004_11m2000_snow", "virtualCavity1.ErrCO2", {"coneCompGrad1.gamma": 1.0}, [5.0, 10.0], 255, 1) # gamma = 6.76639037717
+#print complete_identification("../SnowBreathing/package.mo", "SnowBreathing.Models.c004_11m2000_snow", "virtualCavity1.ErrCO2", {"coneCompGrad1.gamma": 1.0}, [0.0, 5.0], 255, 1) # gamma = 0.00803050238894
+#bezi: print complete_identification("../SnowBreathing/package.mo", "SnowBreathing.Models.c004_11m2000_snow", "virtualCavity1.ErrCO2", {"coneCompGrad1.gamma": 1.0}, [5.0, 30.0], 255, 1) # gamma = 6.76639037717
+
