@@ -9,7 +9,7 @@ function inputData(baseName,setImpDat, plotGrad, plotRepairFlow)
   filePath = ['../Data/' baseName '/'];
   tuneFinished = ~setImpDat;
   
-  close all;
+%   close all;
   while (1)
 %     close all;
     di = readDataInfo(baseName);
@@ -47,13 +47,17 @@ function inputData(baseName,setImpDat, plotGrad, plotRepairFlow)
   %  CO2O2 = avgDownsample(CO2O2_100, 20);
   CO2O2 = CO2O2_25;
     
-  clf; 
+  figure(); clf; 
   subplot(211);hold on;
+  title([baseName, 'O2']);
   plot(CO2O2(:,1),CO2O2(:,3));
   plot(CO2O2(:,1),CO2O2(:,5));
+  legend('Cavity', 'Mouthpiece');
   subplot(212);hold on;
+  title([baseName, 'CO2']);
   plot(CO2O2(:,1),CO2O2(:,2));
   plot(CO2O2(:,1),CO2O2(:,4));
+  legend('Cavity', 'Mouthpiece');
 %   error('Šmitec')
   save('-v4',[filePath 'CO2O2.mat'], 'CO2O2')  
   
